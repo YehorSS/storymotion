@@ -1,17 +1,18 @@
 ---
 name: site-start
-description: Use at the start of any new website, landing page, shop, portfolio, product or marketing page, or a full redesign — before writing code. Classifies the kind of site, decides whether it needs a narrative (full, partial or none), always asks the user whether they want a template and offers the fitting ones, designs the loading screen from the site name in the same story and style, then hands off to scroll-narrative and web-motion.
+description: Use at the start of any new website, landing page, shop, portfolio, product or marketing page, or a full redesign — before writing code. Classifies the kind of site, decides whether it needs a narrative (full, partial or none), designs three different concepts from the user's own description with live previews side by side and lets the user choose (or mix, or take a ready reference template), designs the loading screen from the site name in the same story and style, then hands off to scroll-narrative and web-motion.
 ---
 
 # Site Start
 
-The entry point. Three decisions, in order, **before any code**: what kind of site → how much story → which template.
+The entry point. Three decisions, in order, **before any code**: what kind of site → how much story → which concept.
+Concepts are designed **from the user's description of their site**; the templates in `templates/` are reference patterns to borrow code from, not the menu.
 
 ## Step 1. What kind of site is it?
 
 Infer from the request; ask only if it is genuinely unclear. Use this table:
 
-| Site kind | Narrative | Why | Fitting templates |
+| Site kind | Narrative | Why | Reference patterns |
 |-----------|-----------|-----|-------------------|
 | Brand / small business (restaurant, bakery, hotel, studio) | **Full** | People choose by feeling; story sells the experience | day-cycle, zoom, route |
 | Travel, tours, real estate, places | **Full** | A path or a place is a story by nature | route, day-cycle |
@@ -33,25 +34,54 @@ Narrative levels:
 
 If the user explicitly wants a story on a "None" kind of site (or no story on a "Full" one), do what they ask — but say the trade-off in one line.
 
-## Step 2. Always ask about a template — and wait
+## Step 2. Three concepts from the user's description — live previews, then the user chooses
 
-Before building, **always** ask the user, in one message, and wait for the answer:
+**Read the description first**: what they do or sell, for whom, where, their history, tone, the name, any brand assets (logo colours, photos, fonts), languages. Ask at most two short questions, and only if the **name** or the **core offer** is missing. Everything else you decide in the concepts.
 
-1. State the site kind and narrative level you chose, in one line, so they can correct it.
-2. Offer the 2–3 fitting templates from `templates/CATALOG.md`, each with: name, story device, look, and one line of why it fits. Mention any other template if it is a plausible stretch.
-3. Always include the option **"from scratch"** (no template, built to the brief).
-4. Tell them how to preview: serve `templates/` locally and open `index.html` (the gallery) — or offer to open it for them.
+**Design three concepts for this site.** They are original directions built on its facts, not the reference templates renamed. Each concept has:
 
-Example message:
+- **Name** — 2–4 words that say the idea ("One Day at the Oven").
+- **Story** — device + arc in one line, then 5–7 beats (very short).
+- **Look** — palette (4 hex), display + body font, three mood words.
+- **Signature moment** — the one scene people will remember.
+- **Loader / gauge / page transition** — one line each, all from the same story (Step 3 tables).
+- **Why it fits** and its **trade-off**.
+- **Built on** — the reference pattern(s) whose code it reuses (`templates/CATALOG.md`), or "new".
 
-> This is a **bakery site → full narrative**.
-> Templates that fit:
-> 1. **Day Cycle** — a whole baking day passes as you scroll (dawn → night); warm dark serif. Fits because your story *is* the early morning.
-> 2. **Zoom** — from the street to the crust of one loaf; charcoal and brass. Fits if you want to show craft.
-> 3. **From scratch** — built to your brief, same motion rules.
-> Want me to open the template gallery so you can see them?
+Make it a real choice:
 
-Do not start building until the user picks. If they pick a template, read its section in `CATALOG.md` before editing.
+- **A — closest to the brief**: the obvious strong answer.
+- **B — bold**: the same facts with a braver look or motion.
+- **C — another angle**: a different device or narrative level (e.g. one story scene instead of a full story).
+
+The three must differ in **at least two** of: story device, palette and mood, typography, narrative level. Never three colourways of one layout. For no-narrative sites (shop, docs, app) they differ in layout and interaction (grid vs editorial list vs map…), not in story.
+
+**Live previews** (when you can write files and open a browser):
+
+1. In the project, create `concepts/` with `storymotion.css` and `storymotion.js` (from `templates/`).
+2. For each concept copy `concept/preview.html` to `concepts/a.html` (`b`, `c`) and fill every `FILL`: BRAND tokens, the name in every `[data-brand]`, the loader, hero, one signature scene, gauge, page transition and the spec strip. Take code from the reference patterns in `templates/` (copy blocks, don't reinvent) and use the user's real texts.
+3. Keep each preview to about three screens: a sketch to choose from, not the site. Don't add photos yet; colour fields and type carry it.
+4. Copy `concept/compare.html` to `concepts/index.html` and fill its `concepts` JSON (file, tag, name, palette, story, look, motion, why).
+5. Run `node scripts/check.cjs concepts --out concepts/check` and fix every FAIL.
+6. Serve `concepts/` (`python -m http.server` or `npx serve`) and open `index.html` for the user, or give them the command.
+
+Without file access or a browser, give the three concept cards as text.
+
+**Then send one message and wait:**
+
+1. One line: site kind + narrative level, so they can correct it.
+2. The three concepts, short (name, story in a line, look, signature moment, why / trade-off), and where the previews are.
+3. Their options: **pick A, B or C** · **mix** ("A's story with B's look") · **change** something in one · **use a ready template** as is (name the 1–2 reference patterns that fit).
+
+Example:
+
+> **Forno** is a bakery site → **full story**. Three directions are open at `concepts/index.html`:
+> **A · One Day at the Oven** — a baking day from 03:40 to closing; dark, warm serif; the sun is the scroll bar. Closest to what you described.
+> **B · Crust** — the camera dives from the street into one loaf; charcoal and brass, huge type. Bolder, shows craft.
+> **C · The Morning Order** — a clear ordering page with one story scene "your bread, from dough to door"; light and friendly. Less story, faster to order.
+> Pick one, mix ("A's story, B's look"), ask for changes, or use the ready Day Cycle template as is.
+
+Do not build the site until they choose. The chosen preview grows into the site: its beats become `beats.md` (`scroll-narrative`), its tokens stay. Delete the other previews only when the user says so.
 
 ## Step 3. Loading screen from the site name
 
@@ -73,9 +103,9 @@ Rules: shown once per session; click skips it; at least `data-min` ms (1.2–2 s
 and the hero's own entrance plays only after it. When you rename the site, rename it in the loader too and re-check the fit
 (long names: smaller size or two lines). Preview it any time with `?loader` in the URL.
 
-## Step 4. Rebrand the template
+## Step 4. Brand: name, colours, fonts
 
-Ask for (or infer) the brand: **name, 3–4 colours, display font, languages**. Then, in the copied template:
+The chosen concept already carries the brand; when the user takes a ready template instead, or the brand changes later, do this in the page:
 
 1. **Name** — replace the text of every `[data-brand]` element (`grep data-brand`): logo, eyebrow, loader, header. Never just the visible ones; `check.cjs` fails if they disagree.
 2. **Colours and fonts** — edit the `BRAND` block at the top of `:root` (`--font-display`, `--font-ui`, `--font-mono`, `--ink`, `--muted`, `--bg`, `--accent`…). Rules below it use only these tokens; if you add a webfont, load it in `<head>` and put it first in `--font-display`.

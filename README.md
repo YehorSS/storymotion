@@ -2,7 +2,7 @@
 
 A plugin for coding agents that build websites with **motion** and, when it fits, **narrative**: Claude Code, Gemini CLI and Codex.
 
-Not every site needs a story. StoryMotion first decides what kind of site it is and how much story it should have (full, a single scene, or none), then asks which template to start from.
+Not every site needs a story. StoryMotion first decides what kind of site it is and how much story it should have (full, a single scene, or none). Then it designs **three different concepts from your description**, each with a live preview (loader, first screen, signature scene, palette), side by side on one page, and you pick one, mix them, or take a ready template.
 
 ## Skills
 
@@ -11,9 +11,9 @@ Not every site needs a story. StoryMotion first decides what kind of site it is 
 - **`web-motion`** covers the choice of tool (CSS, scroll-driven animations, View Transitions, WAAPI, GSAP), timing and easing, choreography, performance and accessibility, plus copy-ready recipes.
 - **`/story-page <topic>`** runs the whole flow (Claude Code, Gemini CLI).
 
-## Templates
+## Reference patterns
 
-Seven templates, each with a different device, look and motion. Full descriptions are in [`CATALOG.md`](skills/site-start/templates/CATALOG.md).
+Seven worked examples the concepts borrow code from (and ready templates if you want one as is), each with a different device, look and motion. Full descriptions are in [`CATALOG.md`](skills/site-start/templates/CATALOG.md).
 
 | Template | Narrative | Device | Best for |
 |----------|-----------|--------|----------|

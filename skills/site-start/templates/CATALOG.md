@@ -1,4 +1,6 @@
-# Template catalog
+# Reference patterns
+
+**These are worked examples, not the menu.** `site-start` designs three concepts from the user's own description; each concept borrows code from the patterns below (loader, gauge, scene, transition). A pattern is offered as is only when the user asks for a ready template.
 
 Seven templates. Each one is a different **story device** (or none), a different **look** and a different **motion technique**, so offering two of them gives the user a real choice, not two skins of the same page.
 
