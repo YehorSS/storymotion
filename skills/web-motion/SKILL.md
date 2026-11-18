@@ -72,6 +72,6 @@ Do not add a library for what CSS already does. Do not add smooth-scroll hijacki
 3. Add motion from the recipes in `references/recipes.md`; reuse tokens (`--ease-out`, `--dur-*`).
 4. Verify: 375 px and 1440 px, reduced-motion on, CPU throttled, keyboard-only pass.
 
-See `references/recipes.md` for copy-ready code, and `references/frameworks.md` for React, Next.js and Astro.
+See `references/recipes.md` for copy-ready code, and `references/frameworks.md` for React, Next.js and Astro. The runtime the recipes use is in `assets/` (`storymotion.css`, `storymotion.js`): copy both into the project.
 
 Page transitions between pages of one site follow the same rule as the loader and the gauge: they speak the site's story (dawn, trail, zoom, wipe, chapter turn), stay under ~0.9 s and are off with reduced motion.

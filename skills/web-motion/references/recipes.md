@@ -157,7 +157,7 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
 The gauge is part of the story, not chrome. Style it with the site's device and look:
 time axis → a sky-coloured track with the sun as thumb and a clock readout; path → a dotted trail, walked part filled, stops as rings, km readout;
 zoom → a ruler with ticks and the scale as readout; before/after → two-tone track with a year handle; chapters → numbered segments;
-product or shop → a quiet, slim rail. Mark chapters on it and show their names on hover. The templates in `site-start/templates` have one of each.
+product or shop → a quiet, slim rail. Mark chapters on it and show their names on hover.
 
 
 ```css
@@ -225,7 +225,7 @@ The new page's CSS styles the transition. Other moods: `clip-path: inset(0 100% 
 <nav class="langs"><button data-lang="en">EN</button><button data-lang="it">IT</button></nav>
 <script type="application/json" id="sm-i18n">{ "it": { "h1": "Pane prima dell'alba.", "ch2": "02 — L'impasto" } }</script>
 ```
-`storymotion.js` picks `?lang=` → saved choice → browser language → `<html lang>`, swaps texts, re-splits headlines, reformats `data-count` numbers and the gauge's chapter marks. Missing keys fall back to the default text (`check.cjs` lists them).
+`storymotion.js` picks `?lang=` → saved choice → browser language → `<html lang>`, swaps texts, re-splits headlines, reformats `data-count` numbers and the gauge's chapter marks. Missing keys fall back to the default text .
 
 ## Magnetic button (one per page, on the main CTA)
 

@@ -1,8 +1,8 @@
 # StoryMotion in React, Next.js and Astro
 
-The core (`storymotion.js`) is plain JS. As a classic `<script src>` it starts itself; when a bundler imports it as a module
+The core (`storymotion.js`, in this skill's `assets/`) is plain JS. As a classic `<script src>` it starts itself; when a bundler imports it as a module
 it only registers `window.StoryMotion` and waits for `StoryMotion.init()`, which returns `destroy()` (removes every listener
-and observer). Everything else — markup hooks, CSS, loader, gauge, i18n — is the same as in the templates.
+and observer). Everything else — markup hooks, CSS, loader, gauge, i18n — is the same as on a plain HTML page.
 
 Two things always go in the HTML shell, outside the framework's root, so they work before the app mounts:
 
@@ -99,5 +99,4 @@ import '../storymotion.css';
 
 ## Verify
 
-Run the site (`npm run dev` / `npm run preview`) and point the check at the URL:
-`node <site-start skill>/scripts/check.cjs http://localhost:5173/ --out check-shots`
+Run the site (`npm run dev` / `npm run preview`) and check it in a real browser at 375 px and 1440 px, with reduced motion on and off.

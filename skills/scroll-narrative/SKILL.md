@@ -5,7 +5,7 @@ description: Use when a website, landing page, product page, portfolio or case s
 
 # Scroll Narrative
 
-**Not every site needs a story.** If the `site-start` skill has not run yet, run it first: it decides whether this site gets a full narrative, a single story scene (partial), or none (shops, docs, dashboards, forms) — and asks the user about templates. For **partial**, apply this skill to that one scene only.
+**Not every site needs a story.** Decide first: a **full** narrative (brands, small businesses, travel, places, craft, services with visible results), a **single story scene** (SaaS, apps: usually "how it works"), or **none** (shops, docs, dashboards, forms: motion only for feedback, use `web-motion` only). For **partial**, apply this skill to that one scene only.
 
 A narrative site is a story the visitor walks through with the scroll wheel.
 Facts are woven into the plot, not stacked as feature blocks. Motion (see the `web-motion` skill) is how time passes in that story.
@@ -67,7 +67,7 @@ Standard arc (6–9 beats):
 
 ## 5. Build
 
-1. Start from the template the user picked in `site-start` (`../site-start/templates/`, see `CATALOG.md`), or from scratch on top of `storymotion.css` + `storymotion.js` (pinned scenes with `--p`, step captions, reveals, count-ups, chapter label, draggable scroll gauge, reduced motion).
+1. Build on `storymotion.css` + `storymotion.js` (in `web-motion/assets/`; pinned scenes with `--p`, step captions, reveals, count-ups, chapter label, draggable scroll gauge, loader, languages, reduced motion) and the recipes in `web-motion/references/recipes.md`.
 2. Map each beat to a section; pinned beats become `.scene > .stage` with `[data-step]` captions; custom per-frame logic listens to the scene's `progress` event.
 3. Add motion per `web-motion`; verify at 375 px and 1440 px with reduced motion on and off.
 

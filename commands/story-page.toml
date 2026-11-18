@@ -1,9 +1,9 @@
-description = "Start a website with the right amount of story and motion — site kind, three concepts to choose from, then build"
+description = "Build a website with the right amount of story and motion"
 prompt = """
 Build a website about: {{args}}
 
-1. Follow skills/site-start/SKILL.md from the storymotion extension: decide the site kind and narrative level (full / partial / none), design three different concepts from my description with live previews in concepts/ (skeleton: skills/site-start/concept/), and let me choose (or mix, or take a ready template). Wait for my choice.
-2. If there is a narrative (full or partial), follow skills/scroll-narrative/SKILL.md: write beats.md and show it to me before writing the page.
-3. Grow the chosen concept's preview into the full site (or start from the ready template I picked), with motion per skills/web-motion/SKILL.md and its references/recipes.md.
-4. Run node skills/site-start/scripts/check.cjs on the site, fix every FAIL, look at the screenshots, and report what you checked.
+1. Decide whether it needs a full story, one story scene, or none, and tell me in one line.
+2. If there is a story, follow skills/scroll-narrative/SKILL.md from the storymotion extension: write beats.md and show it to me before writing the page.
+3. Build it with motion per skills/web-motion/SKILL.md (runtime from skills/web-motion/assets/, code from its references/recipes.md).
+4. Check it at 375 px and 1440 px, with reduced motion on and off, and report what you checked.
 """
