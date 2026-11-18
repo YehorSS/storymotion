@@ -1,0 +1,8 @@
+description = "Build a scroll-story page with motion — beat sheet first, then code"
+prompt = """
+Build a narrative, animated web page about: {{args}}
+
+1. Follow skills/scroll-narrative/SKILL.md from the storymotion extension: answer hero / want / obstacle / turn / after, pick one narrative device, and write beats.md. Show me the beat sheet and wait for my OK.
+2. Then build it from skills/scroll-narrative/templates/index.html, adding motion per skills/web-motion/SKILL.md and its references/recipes.md.
+3. Verify at 375 px and 1440 px, with reduced motion on and off, and report what you checked.
+"""

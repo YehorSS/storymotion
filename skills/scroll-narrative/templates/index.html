@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Day at Forno — scroll story template</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+  :root {
+    --ink: #f4efe6; --muted: #b9b1a3; --bg: #12100e; --accent: #f3b562;
+    --ease-out: cubic-bezier(.16, 1, .3, 1); --ease-in: cubic-bezier(.7, 0, .84, 0);
+    --dur-enter: 620ms;
+    font: 400 clamp(16px, 1.1vw, 19px)/1.55 ui-serif, Georgia, serif;
+    color: var(--ink); background: var(--bg);
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html { scrollbar-width: none; }
+  html::-webkit-scrollbar { display: none; }
+  body { background: var(--bg); overflow-x: clip; }
+  h1, h2 { font-weight: 400; letter-spacing: -.02em; line-height: 1.02; }
+  h1 { font-size: clamp(48px, 10vw, 150px); }
+  h2 { font-size: clamp(34px, 5.5vw, 84px); }
+  .eyebrow { font: 600 12px/1 ui-monospace, monospace; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+  section { padding: 0 max(16px, 6vw); }
+
+  /* Beat 1 — hook */
+  .hook { min-height: 100svh; display: grid; align-content: end; gap: 24px; padding-bottom: 12vh; }
+  .hook p { max-width: 34ch; color: var(--muted); font-size: 1.15em; }
+  .cta { display: inline-block; padding: 16px 28px; border-radius: 999px; background: var(--accent); color: #1a120a;
+         font: 600 15px/1 system-ui, sans-serif; text-decoration: none; justify-self: start;
+         transition: translate 280ms var(--ease-out), scale 160ms var(--ease-out); }
+  .cta:active { scale: .97; }
+  .cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+  [data-split] span { display: inline-block; animation: letter var(--dur-enter) var(--ease-out) both; animation-delay: calc(var(--i) * 28ms); }
+  @keyframes letter { from { opacity: 0; translate: 0 .45em; filter: blur(6px); } }
+
+  /* Reveal */
+  .js [data-reveal] { opacity: 0; translate: 0 24px; transition: opacity var(--dur-enter) var(--ease-out), translate var(--dur-enter) var(--ease-out); transition-delay: calc(var(--i, 0) * 70ms); }
+  .js [data-reveal].in { opacity: 1; translate: 0 0; }
+
+  /* Beat 2 — setup */
+  .setup { padding-block: 22vh; display: grid; gap: 28px; max-width: 900px; }
+  .setup p { color: var(--muted); max-width: 46ch; }
+
+  /* Beat 3 — pinned time-axis scene, driven by --p */
+  .scene { height: 320vh; padding: 0; }
+  .stage { position: sticky; top: 0; height: 100svh; overflow: clip;
+           /* dawn → noon → sunset → night: a tall gradient slid by --p */
+           background: linear-gradient(#f0a65a, #9cc9e6 35%, #e98a5c 68%, #0b1026) 0 calc(var(--p, 0) * 100%) / 100% 400%; }
+  .sun { position: absolute; left: 8vw; bottom: 18vh; width: 16vmin; aspect-ratio: 1; border-radius: 50%;
+         background: radial-gradient(circle at 35% 35%, #fff6d8, #ffcf6b 55%, #f08a3c);
+         box-shadow: 0 0 12vmin #ffcf6b88;
+         translate: calc(var(--p, 0) * 68vw) calc(sin(var(--p, 0) * 180deg) * -52vh);
+         opacity: calc(1.25 - var(--p, 0)); }
+  .ground { position: absolute; inset: auto 0 0; height: 20vh; background: #15110d; }
+  .caps { position: absolute; left: max(16px, 6vw); right: max(16px, 6vw); bottom: 26vh; }
+  .cap { position: absolute; bottom: 0; max-width: 900px; opacity: 0; translate: 0 20px;
+         transition: opacity 420ms var(--ease-out), translate 420ms var(--ease-out); }
+  .cap.on { opacity: 1; translate: 0 0; }
+  .cap .eyebrow { display: block; margin-bottom: 12px; color: #1a120a; }
+  .cap h2 { color: #1a120a; transition: color 400ms; }
+  .scene[data-dark] .cap h2 { color: var(--ink); }
+  .scene[data-dark] .cap .eyebrow { color: var(--accent); }
+
+  /* Beat 4 — proof */
+  .proof { padding-block: 24vh; display: grid; gap: 48px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; }
+  .stat b { display: block; font-size: clamp(44px, 6vw, 88px); font-weight: 400; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); }
+
+  /* Beat 5 — resolution */
+  .end { min-height: 90svh; display: grid; place-content: center; text-align: center; gap: 28px; }
+  .end .cta { justify-self: center; }
+
+  /* Chapter label + scroll gauge */
+  .chapter { position: fixed; left: max(16px, 2vw); top: 20px; z-index: 50; mix-blend-mode: difference; color: #fff; }
+  .gauge { position: fixed; right: 10px; top: 12vh; bottom: 12vh; width: 14px; cursor: pointer; touch-action: none; z-index: 50;
+           color: var(--ink); mix-blend-mode: difference; }
+  .gauge::before { content: ""; position: absolute; inset: 0 6px; background: color-mix(in srgb, currentColor 25%, transparent); }
+  .gauge i { position: absolute; left: 4px; right: 4px; top: calc(var(--progress, 0) * (100% - 44px)); height: 44px; background: currentColor; border-radius: 3px; }
+  @media (pointer: coarse) { .gauge { display: none; } }
+
+  @media (max-width: 700px) { .scene { height: 220vh; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-split] span { animation: none; }
+    .js [data-reveal] { opacity: 1; translate: none; transition: none; }
+    .sun { translate: 34vw -40vh; }
+    .cap { transition: opacity 1ms; translate: none; }
+  }
+</style>
+</head>
+<body>
+<div class="chapter eyebrow" aria-live="polite">01 — Before dawn</div>
+<div class="gauge" aria-hidden="true"><i></i></div>
+
+<main>
+  <!-- Beat 1: hook — what, key number, action -->
+  <section class="hook" data-chapter="01 — Before dawn">
+    <span class="eyebrow">Forno · bakery since 1962</span>
+    <h1 data-split>Bread before sunrise.</h1>
+    <p>140 loaves leave our oven before the city wakes up. Order tonight, pick up warm at 7.</p>
+    <a class="cta" href="#order" data-magnetic>Order for tomorrow</a>
+  </section>
+
+  <!-- Beat 2: setup -->
+  <section class="setup" data-chapter="02 — The dough">
+    <span class="eyebrow" data-reveal>3:40 a.m.</span>
+    <h2 data-reveal style="--i:1">The street is dark. The dough has been rising for 18 hours.</h2>
+    <p data-reveal style="--i:2">Flour from one mill in Molise, water, salt and a starter older than the shop. Nothing else.</p>
+  </section>
+
+  <!-- Beat 3: pinned scene — a whole day in one scroll -->
+  <section class="scene" data-chapter="03 — One day">
+    <div class="stage">
+      <div class="sun"></div>
+      <div class="ground"></div>
+      <div class="caps">
+        <div class="cap" data-step><span class="eyebrow">6:00</span><h2>First loaves out.</h2></div>
+        <div class="cap" data-step><span class="eyebrow">12:30</span><h2>Focaccia for the school next door.</h2></div>
+        <div class="cap" data-step><span class="eyebrow">17:00</span><h2>The last tray of cornetti.</h2></div>
+        <div class="cap" data-step><span class="eyebrow">21:00</span><h2>Tomorrow's dough goes to sleep.</h2></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Beat 4: proof as the outcome -->
+  <section class="proof" data-chapter="04 — Sixty years">
+    <h2 data-reveal>That day, repeated.</h2>
+    <div class="stats">
+      <div class="stat" data-reveal style="--i:1"><b data-count="22630">22,630</b><span>days the oven has been lit</span></div>
+      <div class="stat" data-reveal style="--i:2"><b data-count="140">140</b><span>loaves before 7 a.m.</span></div>
+      <div class="stat" data-reveal style="--i:3"><b data-count="3">3</b><span>generations at the counter</span></div>
+    </div>
+  </section>
+
+  <!-- Beat 5: resolution + the hook's action again -->
+  <section class="end" id="order" data-chapter="05 — Tomorrow">
+    <h2 data-reveal>Your loaf is next.</h2>
+    <a class="cta" href="#" data-reveal style="--i:1">Order for tomorrow</a>
+  </section>
+</main>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Split headline into letters; screen readers get the full text.
+  for (const el of document.querySelectorAll('[data-split]')) {
+    el.setAttribute('aria-label', el.textContent);
+    el.innerHTML = [...el.textContent].map((c, i) =>
+      `<span aria-hidden="true" style="--i:${i}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+  }
+
+  // Count-up toward the number already written in the HTML.
+  const countUp = el => {
+    const to = +el.dataset.count;
+    if (reduce.matches) return;
+    const t0 = performance.now();
+    const step = t => {
+      const k = Math.min(1, (t - t0) / 1400), e = 1 - Math.pow(1 - k, 4);
+      el.textContent = Math.round(to * e).toLocaleString('en');
+      if (k < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  // Reveal once.
+  const io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    e.target.querySelectorAll('[data-count]').forEach(countUp);
+    io.unobserve(e.target);
+  }), { threshold: 0.2, rootMargin: '0px 0px -10% 0px' });
+  document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+
+  // Chapter label follows the section in the middle of the screen.
+  const label = document.querySelector('.chapter');
+  const chapters = new IntersectionObserver(entries => entries.forEach(e => {
+    if (e.isIntersecting) label.textContent = e.target.dataset.chapter;
+  }), { rootMargin: '-50% 0px -50% 0px' });
+  document.querySelectorAll('[data-chapter]').forEach(el => chapters.observe(el));
+
+  // Pinned scenes: --p from 0 to 1 while the stage is stuck; captions switch by step.
+  const scenes = [...document.querySelectorAll('.scene')];
+  let queued = false;
+  function tick() {
+    queued = false;
+    for (const s of scenes) {
+      const r = s.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+      s.style.setProperty('--p', p.toFixed(4));
+      s.toggleAttribute('data-dark', p > 0.75);
+      const steps = s.querySelectorAll('[data-step]');
+      const active = Math.min(steps.length - 1, Math.floor(p * steps.length));
+      steps.forEach((el, i) => el.classList.toggle('on', i === active));
+    }
+    root.style.setProperty('--progress', scrollY / Math.max(1, root.scrollHeight - innerHeight));
+  }
+  addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(tick); } }, { passive: true });
+  addEventListener('resize', tick);
+  tick();
+
+  // Draggable, clickable scroll gauge (native scrollbar is hidden).
+  const gauge = document.querySelector('.gauge');
+  const seek = e => {
+    const r = gauge.getBoundingClientRect();
+    scrollTo(0, Math.min(1, Math.max(0, (e.clientY - r.top) / r.height)) * (root.scrollHeight - innerHeight));
+  };
+  gauge.addEventListener('pointerdown', e => { gauge.setPointerCapture(e.pointerId); seek(e); gauge.onpointermove = seek; });
+  gauge.addEventListener('pointerup', () => { gauge.onpointermove = null; });
+
+  // Magnetic main CTA (mouse only).
+  const mag = document.querySelector('[data-magnetic]');
+  if (mag && matchMedia('(hover: hover)').matches && !reduce.matches) {
+    mag.addEventListener('pointermove', e => {
+      const r = mag.getBoundingClientRect();
+      mag.style.translate = `${(e.clientX - r.left - r.width / 2) * .25}px ${(e.clientY - r.top - r.height / 2) * .25}px`;
+    });
+    mag.addEventListener('pointerleave', () => mag.style.translate = '0 0');
+  }
+})();
+</script>
+</body>
+</html>

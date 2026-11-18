@@ -1,0 +1,9 @@
+{
+  "name": "storymotion",
+  "version": "0.1.0",
+  "description": "Frontend motion and scroll storytelling: beat sheets, choreography, scroll-driven scenes, accessible animation recipes and a working scrollytelling template.",
+  "author": { "name": "YehorSS" },
+  "repository": "https://github.com/YehorSS/storymotion",
+  "license": "MIT",
+  "keywords": ["animation", "motion", "scrollytelling", "narrative", "frontend", "gsap", "view-transitions"]
+}

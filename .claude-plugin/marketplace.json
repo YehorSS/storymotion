@@ -1,0 +1,11 @@
+{
+  "name": "storymotion",
+  "owner": { "name": "YehorSS" },
+  "plugins": [
+    {
+      "name": "storymotion",
+      "source": "./",
+      "description": "Frontend motion and scroll storytelling for websites."
+    }
+  ]
+}
