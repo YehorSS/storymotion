@@ -4,18 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Before / After — StoryMotion template</title>
-<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader:' + location.pathname) && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
+<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader') && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
 <link rel="stylesheet" href="storymotion.css">
 <style>
   /* Template: BEFORE / AFTER — transformation device. Scroll wipes the old state into the new one.
      Light, clean grotesk, one electric-blue accent. Put two aligned photos in --before / --after. */
-  :root { --ink: #161616; --muted: #66625c; --bg: #f6f5f2; --accent: #2f5bff;
-          font: 400 clamp(15px, 1.05vw, 18px)/1.55 Inter, "Segoe UI", system-ui, sans-serif; }
+  :root { /* BRAND — the name lives in every [data-brand] element; colours and fonts are set here */
+          --font-display: Inter, "Segoe UI", system-ui, sans-serif; --font-ui: system-ui, sans-serif; --font-old: Georgia, serif; --font-mono: ui-monospace, monospace;
+          --ink: #161616; --muted: #66625c; --bg: #f6f5f2; --accent: #2f5bff;
+          font: 400 clamp(15px, 1.05vw, 18px)/1.55 var(--font-display); }
   h1, h2 { font-weight: 650; letter-spacing: -.035em; line-height: 1; }
   h1 { font-size: clamp(44px, 8vw, 124px); }
   h2 { font-size: clamp(28px, 4vw, 58px); }
   .pill { display: inline-block; padding: 7px 12px; border-radius: 999px; background: #fff; box-shadow: 0 1px 0 #0000000f, 0 0 0 1px #00000012;
-          font: 600 12px/1 system-ui, sans-serif; letter-spacing: .02em; }
+          font: 600 12px/1 var(--font-ui); letter-spacing: .02em; }
   section:not(.scene) { padding: 0 max(16px, 6vw); }
 
   .hook { min-height: 100svh; display: grid; align-content: center; gap: 26px; max-width: 1200px; }
@@ -37,7 +39,7 @@
   .divider { position: absolute; top: 0; bottom: 0; width: 2px; background: #fff; left: calc(var(--p, 0) * 100%); box-shadow: 0 0 0 1px #0002; }
   .divider::after { content: "⟷"; position: absolute; top: 50%; left: 50%; translate: -50% -50%; width: 44px; height: 44px; border-radius: 50%;
                     display: grid; place-items: center; background: #fff; color: var(--ink); font-size: 18px; box-shadow: 0 4px 18px #0003; }
-  .year { position: absolute; top: 18px; font: 700 13px/1 ui-monospace, monospace; letter-spacing: .1em; padding: 8px 10px; border-radius: 8px; background: #fff; }
+  .year { position: absolute; top: 18px; font: 700 13px/1 var(--font-mono); letter-spacing: .1em; padding: 8px 10px; border-radius: 8px; background: #fff; }
   .year.y0 { right: 18px; } .year.y1 { left: 18px; color: var(--accent); } /* new state spreads from the left */
   .change { position: absolute; left: 18px; bottom: 18px; width: min(440px, calc(100% - 36px)); padding: 20px 22px; border-radius: 14px;
             background: #fff; box-shadow: 0 10px 30px -12px #0003; display: grid; gap: 6px; }
@@ -58,24 +60,30 @@
   .gauge { mix-blend-mode: normal; color: var(--ink); width: 20px; }
   .gauge::before { inset: 0 8px; border-radius: 4px; background: linear-gradient(var(--accent) calc(var(--progress, 0) * 100%), #b9a77f 0); }
   .gauge i { left: 0; right: 0; height: 20px; border-radius: 50%; top: calc(var(--progress, 0) * (100% - 20px)); background: #fff; box-shadow: 0 2px 10px #0003, 0 0 0 1px #0001; z-index: 1; }
-  .gauge i::after { content: attr(data-y); position: absolute; right: 30px; top: 50%; translate: 0 -50%; padding: 6px 8px; border-radius: 6px; background: #fff; box-shadow: 0 2px 10px #0002; font: 700 11px/1 ui-monospace, monospace; color: var(--accent); transition: opacity var(--dur-ui); }
+  .gauge i::after { content: attr(data-y); position: absolute; right: 30px; top: 50%; translate: 0 -50%; padding: 6px 8px; border-radius: 6px; background: #fff; box-shadow: 0 2px 10px #0002; font: 700 11px/1 var(--font-mono); color: var(--accent); transition: opacity var(--dur-ui); }
   .gauge b { left: 7px; right: 7px; height: 2px; background: #fff; opacity: 1; }
   .gauge:hover i::after { opacity: 0; }
 
   /* Loader = the renovation in one move: the name in a dated 1974 style is wiped into the new brand, year counts to 2026 */
   .l-stack { position: relative; display: grid; justify-items: center; }
   .l-old, .l-new { grid-area: 1 / 1; font-size: clamp(72px, 15vw, 210px); line-height: 1.1; }
-  .l-old { font-family: Georgia, serif; font-style: italic; color: #a8946a; clip-path: inset(-10% 0 -10% calc(var(--lp, 0) * 100%)); }
+  .l-old { font-family: var(--font-old); font-style: italic; color: #a8946a; clip-path: inset(-10% 0 -10% calc(var(--lp, 0) * 100%)); }
   .l-new { font-weight: 650; letter-spacing: -.05em; color: var(--accent); clip-path: inset(-10% calc((1 - var(--lp, 0)) * 100%) -10% 0); }
   .l-div { position: absolute; top: -6%; bottom: -6%; width: 2px; left: calc(var(--lp, 0) * 100%); background: var(--ink); }
-  .l-year { position: absolute; bottom: 14vh; font: 700 13px/1 ui-monospace, monospace; letter-spacing: .1em; padding: 8px 10px; border-radius: 8px; background: #fff; box-shadow: 0 2px 10px #0002; }
+  .l-year { position: absolute; bottom: 14vh; font: 700 13px/1 var(--font-mono); letter-spacing: .1em; padding: 8px 10px; border-radius: 8px; background: #fff; box-shadow: 0 2px 10px #0002; }
+
+  /* Page transition = before / after: the old page fades to sepia while the new one is wiped over it */
+  ::view-transition-old(root) { animation: 750ms var(--ease-move) both vt-age; }
+  ::view-transition-new(root) { animation: 750ms var(--ease-move) both vt-wipe; }
+  @keyframes vt-age { to { filter: sepia(.8) saturate(.6); } }
+  @keyframes vt-wipe { from { clip-path: inset(0 100% 0 0); } }
 </style>
 </head>
 <body>
 <div class="loader" aria-hidden="true">
   <div class="l-stack">
-    <div class="l-old">Nuovo</div>
-    <div class="l-new">Nuovo</div>
+    <div class="l-old" data-brand>Nuovo</div>
+    <div class="l-new" data-brand>Nuovo</div>
     <i class="l-div"></i>
   </div>
   <div class="l-year">1974</div>
@@ -85,7 +93,7 @@
 
 <main>
   <section class="hook" data-chapter="01 — The brief">
-    <span class="pill">Nuovo · kitchen renovation in 21 days</span>
+    <span class="pill"><span data-brand>Nuovo</span> · kitchen renovation in 21 days</span>
     <h1 data-split>Same walls. New kitchen.</h1>
     <p>We keep the plumbing where it is and change everything you see. Fixed price before we start, keys back in three weeks.</p>
     <div class="row"><a class="cta" href="#quote" data-magnetic>Get a fixed price</a><span class="pill">4.9 · 312 kitchens</span></div>

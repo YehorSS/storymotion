@@ -205,6 +205,28 @@ document.querySelector('.loader')?.addEventListener('loaderprogress', ({ detail 
 ```
 Base CSS (in `storymotion.css`) hides it without JS, on repeat visits and with reduced motion, and has a 6 s failsafe.
 
+## Page transitions in the site's story (multi-page)
+
+```css
+@view-transition { navigation: auto; }                    /* on every page of the site */
+::view-transition-old(root) { animation: 900ms var(--ease-out) both vt-dim; }
+::view-transition-new(root) { animation: 900ms var(--ease-out) both vt-dawn; }
+@keyframes vt-dim  { to { filter: brightness(.35); } }
+@keyframes vt-dawn { from { clip-path: circle(0% at 50% 100%); } to { clip-path: circle(150% at 50% 100%); } }
+@media (prefers-reduced-motion: reduce) { ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; } }
+```
+The new page's CSS styles the transition. Other moods: `clip-path: inset(0 100% 0 0)` → drawn left to right; old `scale: 1.6; opacity: 0` + new from `scale: .86` → zoom; old `translate: -30% 0` + new from `translate: 100% 0` → chapter turn.
+
+## Languages
+
+```html
+<h1 data-split data-i18n="h1">Bread before sunrise.</h1>            <!-- default language lives in the HTML -->
+<section data-chapter="02 — The dough" data-i18n-chapter="ch2">…</section>
+<nav class="langs"><button data-lang="en">EN</button><button data-lang="it">IT</button></nav>
+<script type="application/json" id="sm-i18n">{ "it": { "h1": "Pane prima dell'alba.", "ch2": "02 — L'impasto" } }</script>
+```
+`storymotion.js` picks `?lang=` → saved choice → browser language → `<html lang>`, swaps texts, re-splits headlines, reformats `data-count` numbers and the gauge's chapter marks. Missing keys fall back to the default text (`check.cjs` lists them).
+
 ## Magnetic button (one per page, on the main CTA)
 
 ```js

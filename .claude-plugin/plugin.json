@@ -1,7 +1,7 @@
 {
   "name": "storymotion",
-  "version": "0.1.0",
-  "description": "Websites with the right amount of story and motion: site-kind router (full / partial / no narrative), 7 distinct templates with themed scroll gauges, beat sheets, animation recipes.",
+  "version": "0.2.0",
+  "description": "Websites with the right amount of story and motion: site-kind router (full / partial / no narrative), 7 templates with loaders, scroll gauges and page transitions in the same story, i18n, React/Astro recipes and a browser check script.",
   "author": { "name": "YehorSS" },
   "repository": "https://github.com/YehorSS/storymotion",
   "license": "MIT",

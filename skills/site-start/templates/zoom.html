@@ -4,24 +4,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zoom — StoryMotion template</title>
-<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader:' + location.pathname) && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
+<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader') && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
 <link rel="stylesheet" href="storymotion.css">
 <style>
   /* Template: ZOOM — scale device. One continuous dive: landscape → building → room → detail.
      Charcoal, brass, wide grotesk caps. */
-  :root { --ink: #ece8e1; --muted: #8f8a82; --bg: #0e0e0d; --accent: #c9a46a;
-          font: 400 clamp(15px, 1vw, 18px)/1.6 "Helvetica Neue", Arial, sans-serif; }
+  :root { /* BRAND — the name lives in every [data-brand] element; colours and fonts are set here */
+          --font-display: "Helvetica Neue", Arial, sans-serif; --font-mono: ui-monospace, monospace;
+          --ink: #ece8e1; --muted: #8f8a82; --bg: #0e0e0d; --accent: #c9a46a;
+          font: 400 clamp(15px, 1vw, 18px)/1.6 var(--font-display); }
   h1, h2 { font-weight: 500; text-transform: uppercase; letter-spacing: .02em; line-height: .95; }
   h1 { font-size: clamp(44px, 9vw, 140px); }
   h2 { font-size: clamp(28px, 4vw, 60px); }
-  .tag { font: 500 12px/1 ui-monospace, monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
+  .tag { font: 500 12px/1 var(--font-mono); letter-spacing: .2em; text-transform: uppercase; color: var(--accent); }
   section:not(.scene) { padding: 0 max(16px, 6vw); }
 
   .hook { min-height: 100svh; display: grid; grid-template-columns: 1fr auto; align-content: end; gap: 28px; padding-bottom: 10vh; }
   .hook h1 { grid-column: 1 / -1; }
   .hook p { max-width: 38ch; color: var(--muted); }
   .cta { align-self: end; padding: 18px 30px; background: var(--ink); color: var(--bg); text-decoration: none;
-         font: 600 13px/1 ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase;
+         font: 600 13px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase;
          transition: background var(--dur-ui) var(--ease-out), translate var(--dur-ui) var(--ease-out); }
   .cta:hover { background: var(--accent); }
   .cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
@@ -30,7 +32,7 @@
   .scene { height: 480vh; }
   .stage { display: grid; place-items: center; }
   .frame { position: absolute; width: min(78vmin, 760px); aspect-ratio: 1; transform-origin: 50% 50%; will-change: transform, opacity; }
-  .frame .lbl { position: absolute; left: 0; top: -28px; font: 500 11px/1 ui-monospace, monospace; letter-spacing: .2em; color: var(--accent); text-transform: uppercase; }
+  .frame .lbl { position: absolute; left: 0; top: -28px; font: 500 11px/1 var(--font-mono); letter-spacing: .2em; color: var(--accent); text-transform: uppercase; }
   .f0 { background: linear-gradient(#2b2f2c 0 55%, #3d4237 55% 100%); }
   .f0::after { content: ""; position: absolute; inset: 40% 0 0; background: radial-gradient(120% 60% at 50% 100%, #4e5544, #0000 70%); }
   .f1 { background: repeating-linear-gradient(90deg, #0000 0 18%, #1b1b1a 18% 20%), repeating-linear-gradient(0deg, #8e8a80 0 22%, #2a2927 22% 25%); }
@@ -39,7 +41,7 @@
   .f3 { background: radial-gradient(circle at 50% 50%, #e7c88f 0 18%, #a9824a 19% 24%, #3a2f22 25% 100%); }
   .caption { position: absolute; left: max(16px, 6vw); bottom: 8vh; max-width: 520px; display: grid; gap: 10px; }
   .caption p { color: var(--muted); }
-  .scale { position: absolute; right: max(40px, 6vw); bottom: 8vh; font: 500 13px/1 ui-monospace, monospace; color: var(--accent); }
+  .scale { position: absolute; right: max(40px, 6vw); bottom: 8vh; font: 500 13px/1 var(--font-mono); color: var(--accent); }
 
   .detail { padding-block: 22vh; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 48px; }
   .detail h2 { grid-column: 1 / -1; }
@@ -54,7 +56,7 @@
   .gauge { mix-blend-mode: normal; color: var(--accent); width: 22px; }
   .gauge::before { inset: 0 4px; background: repeating-linear-gradient(#8f8a8288 0 1px, #0000 1px 10px); }
   .gauge i { left: -4px; right: -4px; height: 2px; border-radius: 0; top: calc(var(--progress, 0) * 100%); background: var(--accent); }
-  .gauge i::after { content: "1 : " attr(data-s); position: absolute; right: 34px; top: 50%; translate: 0 -50%; white-space: nowrap; font: 500 11px/1 ui-monospace, monospace; letter-spacing: .1em; transition: opacity var(--dur-ui); }
+  .gauge i::after { content: "1 : " attr(data-s); position: absolute; right: 34px; top: 50%; translate: 0 -50%; white-space: nowrap; font: 500 11px/1 var(--font-mono); letter-spacing: .1em; transition: opacity var(--dur-ui); }
   .gauge b { left: 0; right: 0; height: 1px; background: var(--ink); opacity: .8; }
   .gauge b::after { color: var(--ink); }
   .gauge:hover i::after { opacity: 0; }
@@ -62,14 +64,20 @@
   /* Loader = zooming out to the whole project: the name starts huge (1 : 1, a detail) and settles into its frame (1 : 5000) */
   .l-frame { position: relative; width: min(64vmin, 560px); aspect-ratio: 1; display: grid; place-items: center;
              outline: 1px solid color-mix(in srgb, var(--accent) calc(var(--lp, 0) * 100%), transparent); }
-  .l-name { font: 500 clamp(28px, 5vw, 64px)/1 "Helvetica Neue", Arial, sans-serif; text-transform: uppercase; white-space: nowrap;
+  .l-name { font: 500 clamp(28px, 5vw, 64px)/1 var(--font-display); text-transform: uppercase; white-space: nowrap;
             letter-spacing: calc(.06em + (1 - var(--lp, 0)) * .5em); scale: calc(1 + (1 - var(--lp, 0)) * (1 - var(--lp, 0)) * 7); }
-  .l-scale { position: absolute; bottom: 12vh; font: 500 12px/1 ui-monospace, monospace; letter-spacing: .2em; color: var(--accent); }
+  .l-scale { position: absolute; bottom: 12vh; font: 500 12px/1 var(--font-mono); letter-spacing: .2em; color: var(--accent); }
+
+  /* Page transition = a change of scale: we dive into the old page, the new one settles from a step back */
+  ::view-transition-old(root) { animation: 700ms var(--ease-in) both vt-dive; }
+  ::view-transition-new(root) { animation: 800ms var(--ease-out) 150ms both vt-settle; }
+  @keyframes vt-dive { to { scale: 1.6; opacity: 0; } }
+  @keyframes vt-settle { from { scale: .86; opacity: 0; } }
 </style>
 </head>
 <body>
 <div class="loader" aria-hidden="true">
-  <div class="l-frame"><div class="l-name" data-name>Casa Lume</div></div>
+  <div class="l-frame"><div class="l-name" data-name data-brand>Casa Lume</div></div>
   <div class="l-scale">1 : 1</div>
 </div>
 <div class="chapter" aria-live="polite">01 — Studio</div>
@@ -77,7 +85,7 @@
 
 <main>
   <section class="hook" data-chapter="01 — Studio">
-    <span class="tag">Casa Lume · architecture & interiors</span>
+    <span class="tag"><span data-brand>Casa Lume</span> · architecture & interiors</span>
     <h1 data-split>From the hill to the handle.</h1>
     <p>We design the house, the room and the brass knob you touch every morning — at the same table, by the same hands.</p>
     <a class="cta" href="#talk" data-magnetic>Start a project</a>
@@ -127,9 +135,12 @@
   });
 </script>
 <script>
-  // Gauge readout: drawing scale from 1 : 5000 down to 1 : 1, in step with the zoom.
-  const rulerThumb = document.querySelector('.gauge i');
-  document.querySelector('.scene').addEventListener('progress', ({ detail: { p: detail } }) => rulerThumb.dataset.s = Math.round(Math.pow(5000, 1 - detail)).toLocaleString('en'));
+  // Gauge readout: drawing scale, passing exactly through each frame's scale as the zoom reaches it.
+  const rulerThumb = document.querySelector('.gauge i'), scales = [5000, 1000, 200, 1];
+  document.querySelector('.scene').addEventListener('progress', ({ detail: { p } }) => {
+    const t = p * (scales.length - 1), i = Math.min(scales.length - 2, Math.floor(t));
+    rulerThumb.dataset.s = Math.round(scales[i] * Math.pow(scales[i + 1] / scales[i], t - i)).toLocaleString('en');
+  });
 </script>
 <script>
   // Loader readout: drawing scale, from the detail (1 : 1) out to the site (1 : 5000).

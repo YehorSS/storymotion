@@ -4,13 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SaaS — StoryMotion template</title>
-<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader:' + location.pathname) && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
+<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader') && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
 <link rel="stylesheet" href="storymotion.css">
 <style>
   /* Template: SAAS — partial narrative. A clear, scannable product landing; ONE pinned "how it works" scene tells
      the before → after in three steps. Everything else is functional: features, pricing, FAQ. */
-  :root { --ink: #0f1222; --muted: #5d6275; --bg: #ffffff; --soft: #f3f5fb; --line: #e3e6ef; --accent: #5b4cff;
-          font: 400 16px/1.55 Inter, "Segoe UI", system-ui, sans-serif; }
+  :root { /* BRAND — the name lives in every [data-brand] element; colours and fonts are set here */
+          --font-display: Inter, "Segoe UI", system-ui, sans-serif; --font-mono: ui-monospace, monospace;
+          --ink: #0f1222; --muted: #5d6275; --bg: #ffffff; --soft: #f3f5fb; --line: #e3e6ef; --accent: #5b4cff;
+          font: 400 16px/1.55 var(--font-display); }
   h1, h2, h3 { letter-spacing: -.03em; line-height: 1.05; font-weight: 700; }
   h1 { font-size: clamp(40px, 6vw, 84px); }
   h2 { font-size: clamp(30px, 3.6vw, 52px); }
@@ -44,7 +46,7 @@
   .stage { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 5vw; padding: 0 max(16px, 5vw); }
   .steps { position: relative; min-height: 220px; }
   .step { position: absolute; inset: 0 0 auto; display: grid; gap: 14px; }
-  .step span { color: #a9a3ff; font: 600 13px/1 ui-monospace, monospace; letter-spacing: .1em; }
+  .step span { color: #a9a3ff; font: 600 13px/1 var(--font-mono); letter-spacing: .1em; }
   .step p { color: #b9bdd0; max-width: 42ch; }
   .board { position: relative; aspect-ratio: 1; max-height: 70svh; }
   .board i { position: absolute; width: 38%; height: 12%; border-radius: 10px; background: #fff; box-shadow: 0 10px 30px -12px #0008;
@@ -79,22 +81,28 @@
 
   /* Loader = the product's promise: scattered letters of the name get sorted into place, then a green tick */
   .l-box { display: grid; justify-items: center; gap: 18px; }
-  .l-name { font: 700 clamp(64px, 12vw, 160px)/1 Inter, "Segoe UI", system-ui, sans-serif; letter-spacing: -.04em; }
+  .l-name { font: 700 clamp(64px, 12vw, 160px)/1 var(--font-display); letter-spacing: -.04em; }
   .l-name .w > span { display: inline-block; translate: calc(var(--x, 0px) * (1 - var(--lp, 0))) calc(var(--y, 0px) * (1 - var(--lp, 0))); rotate: calc(var(--r, 0deg) * (1 - var(--lp, 0))); }
   .l-status { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 14px; }
   .l-status b { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #c9cde0;
                 background: color-mix(in srgb, #2bd47d calc(clamp(0, (var(--lp, 0) - .8) * 500, 100) * 1%), transparent); }
+
+  /* Page transition = app-like: quick fade and a small lift, nothing in the way */
+  ::view-transition-old(root) { animation: 180ms var(--ease-in) both vt-out; }
+  ::view-transition-new(root) { animation: 320ms var(--ease-out) 80ms both vt-in; }
+  @keyframes vt-out { to { opacity: 0; } }
+  @keyframes vt-in { from { opacity: 0; translate: 0 12px; } }
 </style>
 </head>
 <body>
 <div class="loader" aria-hidden="true">
   <div class="l-box">
-    <div class="l-name">Tidy</div>
+    <div class="l-name" data-brand>Tidy</div>
     <div class="l-status"><b></b><span>Sorting…</span></div>
   </div>
 </div>
 <div class="gauge" aria-hidden="true"><i></i></div>
-<header><b>Tidy</b><nav><a>Product</a><a>Pricing</a><a>Docs</a></nav><a class="btn ghost" href="#">Sign in</a></header>
+<header><b data-brand>Tidy</b><nav><a>Product</a><a>Pricing</a><a>Docs</a></nav><a class="btn ghost" href="#">Sign in</a></header>
 
 <main>
   <section class="hero">

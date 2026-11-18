@@ -9,7 +9,7 @@ Not every site needs a story. StoryMotion first decides what kind of site it is 
 - **`site-start`** is the entry point. It classifies the site (brand, travel, SaaS, shop, docs, dashboard…), picks the narrative level and always offers the fitting templates (or "from scratch") before any code. It also designs the loading screen from the site name, in the same story and style.
 - **`scroll-narrative`** covers story questions, the narrative device, the beat sheet and pacing rules.
 - **`web-motion`** covers the choice of tool (CSS, scroll-driven animations, View Transitions, WAAPI, GSAP), timing and easing, choreography, performance and accessibility, plus copy-ready recipes.
-- **`/story-page <topic>`** runs the whole flow.
+- **`/story-page <topic>`** runs the whole flow (Claude Code, Gemini CLI).
 
 ## Templates
 
@@ -27,7 +27,17 @@ Seven templates, each with a different device, look and motion. Full description
 
 Preview: `cd skills/site-start/templates && python -m http.server`, then open http://localhost:8000.
 
-Every template has a loading screen built from the site name and a scroll gauge in the same story and style. Every template uses no dependencies, works without JS (content stays visible), respects `prefers-reduced-motion`, and replaces the native scrollbar with a draggable progress gauge.
+Every template has a loading screen built from the site name, a scroll gauge and page transitions in the same story and style, a `BRAND` token block for quick rebranding, and language support (Day Cycle ships EN / IT / UK). Every template uses no dependencies, works without JS (content stays visible), respects `prefers-reduced-motion`, and replaces the native scrollbar with a draggable progress gauge.
+
+## Check a site
+
+```
+npm i -D playwright        # once; uses installed Chrome, otherwise: npx playwright install chromium
+node skills/site-start/scripts/check.cjs <site folder | url> --out check-shots
+```
+Checks 375 / 1440 px overflow, console and network errors, the loader, brand consistency, pinned scenes, every language, reduced motion and no-JS, and saves screenshots of every scene. Exit code 1 on any failure.
+
+React, Next.js and Astro: see [`frameworks.md`](skills/web-motion/references/frameworks.md).
 
 ## Install
 
@@ -42,11 +52,10 @@ Every template has a loading screen built from the site name and a scroll gauge 
 gemini extensions install https://github.com/YehorSS/storymotion
 ```
 
-**Codex** loads skills from its skills folder. Copy the three skill folders there:
+**Codex** (plugin, via this repo's `.agents/plugins/marketplace.json`)
 ```
-git clone https://github.com/YehorSS/storymotion
-cp -r storymotion/skills/* ~/.codex/skills/
+codex plugin marketplace add YehorSS/storymotion
 ```
-Another option is to drop `AGENTS.md` plus the `skills/` folder into your project.
+then open `/plugins` in Codex, install **StoryMotion** and start a new session. Skills only, without the plugin: copy `skills/*` to `~/.agents/skills/` (user) or `.agents/skills/` in a repo. Invoke with `$site-start`, or just ask for a website. Codex has no plugin slash commands, so `/story-page` is Claude Code / Gemini only.
 
 MIT license.

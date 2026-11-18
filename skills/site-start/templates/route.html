@@ -4,25 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Route — StoryMotion template</title>
-<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader:' + location.pathname) && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
+<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader') && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
 <link rel="stylesheet" href="storymotion.css">
 <style>
   /* Template: ROUTE — path device. A line is drawn across a map as you scroll; stops light up. Paper, ink, red pencil. */
-  :root { --ink: #1d1a16; --muted: #6b6257; --bg: #f1ebdf; --accent: #c2462d;
-          font: 400 clamp(16px, 1.1vw, 19px)/1.6 "Iowan Old Style", Palatino, Georgia, serif; }
+  :root { /* BRAND — the name lives in every [data-brand] element; colours and fonts are set here */
+          --font-display: "Iowan Old Style", Palatino, Georgia, serif; --font-mono: ui-monospace, monospace;
+          --ink: #1d1a16; --muted: #6b6257; --bg: #f1ebdf; --accent: #c2462d;
+          font: 400 clamp(16px, 1.1vw, 19px)/1.6 var(--font-display); }
   h1, h2 { font-weight: 400; font-style: italic; letter-spacing: -.01em; line-height: 1.05; }
   h1 { font-size: clamp(46px, 8.5vw, 132px); }
   h2 { font-size: clamp(30px, 4.6vw, 68px); }
-  .kicker { font: 500 13px/1.2 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  .kicker { font: 500 13px/1.2 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
   section:not(.scene) { padding: 0 max(16px, 7vw); }
   body { background-image: radial-gradient(#0000 60%, #c9bba322), repeating-linear-gradient(0deg, #0000 0 31px, #1d1a160a 31px 32px); }
 
   .hook { min-height: 100svh; display: grid; align-content: center; gap: 26px; max-width: 1100px; }
   .hook p { max-width: 40ch; color: var(--muted); font-size: 1.15em; }
-  .hook .meta { display: flex; gap: 28px; flex-wrap: wrap; font: 500 14px/1 ui-monospace, monospace; }
-  .hook .meta b { display: block; font: 400 34px/1.1 Georgia, serif; color: var(--accent); margin-bottom: 6px; }
+  .hook .meta { display: flex; gap: 28px; flex-wrap: wrap; font: 500 14px/1 var(--font-mono); }
+  .hook .meta b { display: block; font: 400 34px/1.1 var(--font-display); color: var(--accent); margin-bottom: 6px; }
   .cta { justify-self: start; padding: 15px 26px; border: 1.5px solid var(--ink); color: var(--ink); text-decoration: none;
-         font: 600 14px/1 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase;
+         font: 600 14px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase;
          transition: background var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out), translate var(--dur-ui) var(--ease-out); }
   .cta:hover { background: var(--ink); color: var(--bg); }
   .cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
@@ -40,17 +42,17 @@
   .map .stop.passed { fill: var(--accent); stroke: var(--accent); r: 9; }
   .map .walker { fill: var(--ink); }
   .map .walker-halo { fill: var(--accent); opacity: .18; }
-  .map text { font: 500 15px/1 ui-monospace, monospace; fill: var(--muted); letter-spacing: .06em; }
+  .map text { font: 500 15px/1 var(--font-mono); fill: var(--muted); letter-spacing: .06em; }
   .legs { position: relative; min-height: 9.5em; }
   .leg { position: absolute; inset: auto 0 0 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 22px; align-items: baseline; max-width: 900px; }
-  .leg .km { grid-row: span 2; font: 400 clamp(40px, 6vw, 84px)/1 Georgia, serif; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .leg .km { grid-row: span 2; font: 400 clamp(40px, 6vw, 84px)/1 var(--font-display); color: var(--accent); font-variant-numeric: tabular-nums; }
   .leg p { color: var(--muted); max-width: 52ch; }
 
   .proof { padding-block: 22vh; display: grid; gap: 40px; }
   .proof ol { list-style: none; padding: 0; display: grid; gap: 0; border-top: 1px solid #1d1a1633; }
   .proof li { display: grid; grid-template-columns: 5ch 1fr auto; gap: 20px; padding: 18px 0; border-bottom: 1px solid #1d1a1633; }
-  .proof li span:first-child { font-family: ui-monospace, monospace; color: var(--accent); }
-  .proof li span:last-child { font-family: ui-monospace, monospace; color: var(--muted); }
+  .proof li span:first-child { font-family: var(--font-mono); color: var(--accent); }
+  .proof li span:last-child { font-family: var(--font-mono); color: var(--muted); }
 
   .end { min-height: 85svh; display: grid; place-content: center; justify-items: center; text-align: center; gap: 26px; }
   .end .cta { justify-self: center; }
@@ -67,24 +69,30 @@
   .gauge::before { inset: 0 6px; background: repeating-linear-gradient(var(--ink) 0 2px, #0000 2px 8px); opacity: .35; }
   .gauge::after { content: ""; position: absolute; left: 6px; right: 6px; top: 0; height: calc(var(--progress, 0) * 100%); background: var(--accent); }
   .gauge i { left: 1px; right: 1px; height: 12px; border-radius: 50%; top: calc(var(--progress, 0) * (100% - 12px)); background: var(--ink); box-shadow: 0 0 0 6px #c2462d2e; z-index: 2; }
-  .gauge i::after { content: "km " attr(data-km); position: absolute; right: 24px; top: 50%; translate: 0 -50%; white-space: nowrap; font: 500 11px/1 ui-monospace, monospace; color: var(--accent); transition: opacity var(--dur-ui); }
+  .gauge i::after { content: "km " attr(data-km); position: absolute; right: 24px; top: 50%; translate: 0 -50%; white-space: nowrap; font: 500 11px/1 var(--font-mono); color: var(--accent); transition: opacity var(--dur-ui); }
   .gauge b { left: 2px; right: auto; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--ink); background: var(--bg); opacity: 1; z-index: 1; }
   .gauge:hover i::after { opacity: 0; }
 
   /* Loader = the first stretch of the walk: a red-pencil trail draws itself, the name is "written" along with it, km count up */
   .loader { background-image: repeating-linear-gradient(0deg, #0000 0 31px, #1d1a160a 31px 32px); }
   .l-wrap { display: grid; gap: 14px; width: min(760px, 88vw); }
-  .l-name { font: italic 400 clamp(44px, 8vw, 104px)/1.1 "Iowan Old Style", Palatino, Georgia, serif; clip-path: inset(-10% calc((1 - var(--lp, 0)) * 100%) -10% 0); }
+  .l-name { font: italic 400 clamp(44px, 8vw, 104px)/1.1 var(--font-display); clip-path: inset(-10% calc((1 - var(--lp, 0)) * 100%) -10% 0); }
   .l-map { width: 100%; height: 40px; overflow: visible; }
   .l-ghost { fill: none; stroke: var(--ink); stroke-opacity: .3; stroke-width: 2; stroke-dasharray: 2 8; }
   .l-trail { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--lp, 0)); }
-  .l-km { font: 500 13px/1 ui-monospace, monospace; letter-spacing: .1em; color: var(--accent); }
+  .l-km { font: 500 13px/1 var(--font-mono); letter-spacing: .1em; color: var(--accent); }
+
+  /* Page transition = the next stretch of road: the new page is drawn in from left to right */
+  ::view-transition-old(root) { animation: 800ms var(--ease-move) both vt-fade; }
+  ::view-transition-new(root) { animation: 800ms var(--ease-move) both vt-draw; }
+  @keyframes vt-fade { to { opacity: .4; } }
+  @keyframes vt-draw { from { clip-path: inset(0 100% 0 0); } }
 </style>
 </head>
 <body>
 <div class="loader" aria-hidden="true">
   <div class="l-wrap">
-    <div class="l-name">The Salt Road</div>
+    <div class="l-name" data-brand>The Salt Road</div>
     <svg class="l-map" viewBox="0 0 600 40" preserveAspectRatio="none">
       <path class="l-ghost" d="M6,22 C120,4 230,38 340,18 S520,10 594,22"/>
       <path class="l-trail" pathLength="1" d="M6,22 C120,4 230,38 340,18 S520,10 594,22"/>
@@ -97,7 +105,7 @@
 
 <main>
   <section class="hook" data-chapter="I — The idea">
-    <span class="kicker">The Salt Road · guided walk · 6 days</span>
+    <span class="kicker"><span data-brand>The Salt Road</span> · guided walk · 6 days</span>
     <h1 data-split>412 km on foot, from the mines to the sea.</h1>
     <p>The way salt travelled for eight centuries. We carry your bag; you carry nothing but the view.</p>
     <div class="meta" data-reveal>
@@ -171,9 +179,12 @@
   });
 </script>
 <script>
-  // Gauge readout: kilometres walked, in step with the trail on the map.
-  const walkerThumb = document.querySelector('.gauge i');
-  document.querySelector('.scene').addEventListener('progress', ({ detail: { p: detail } }) => walkerThumb.dataset.km = Math.round(detail * 412));
+  // Gauge readout: kilometres walked, matching the walker on the map (stops sit at their real km).
+  const walkerThumb = document.querySelector('.gauge i'), stopKm = [0, 96, 188, 301, 412];
+  document.querySelector('.scene').addEventListener('progress', ({ detail: { p } }) => {
+    const seg = p * (stopKm.length - 1), i = Math.min(stopKm.length - 2, Math.floor(seg));
+    walkerThumb.dataset.km = Math.round(stopKm[i] + (seg - i) * (stopKm[i + 1] - stopKm[i]));
+  });
 </script>
 <script>
   // Loader readout: the first kilometres of the road.

@@ -73,10 +73,39 @@ Rules: shown once per session; click skips it; at least `data-min` ms (1.2–2 s
 and the hero's own entrance plays only after it. When you rename the site, rename it in the loader too and re-check the fit
 (long names: smaller size or two lines). Preview it any time with `?loader` in the URL.
 
-## Step 4. Hand off
+## Step 4. Rebrand the template
+
+Ask for (or infer) the brand: **name, 3–4 colours, display font, languages**. Then, in the copied template:
+
+1. **Name** — replace the text of every `[data-brand]` element (`grep data-brand`): logo, eyebrow, loader, header. Never just the visible ones; `check.cjs` fails if they disagree.
+2. **Colours and fonts** — edit the `BRAND` block at the top of `:root` (`--font-display`, `--font-ui`, `--font-mono`, `--ink`, `--muted`, `--bg`, `--accent`…). Rules below it use only these tokens; if you add a webfont, load it in `<head>` and put it first in `--font-display`.
+3. **Story readouts** — the gauge and loader readouts (hours, km, scale, year) come from the story; update their arrays when the beats change, so the gauge and the captions show the same value.
+4. **Languages** — see Step 5.
+
+## Step 5. Languages
+
+The HTML holds the default language (`<html lang>`). Mark every visible text with `data-i18n="key"` (chapter names with `data-i18n-chapter="key"`), put the other languages in `<script type="application/json" id="sm-i18n">{"it": {"key": "…"}}</script>`, and add `[data-lang="it"]` buttons. The core picks `?lang=` → saved choice → browser language → default, re-splits headlines, reformats numbers and chapter marks on switch. `day-cycle.html` is the worked example (EN / IT / UK).
+
+- Write each language natively; don't translate word by word (Italian runs ~20 % longer, check headlines at 375 px).
+- Names, times and numbers are not translated; numbers are formatted per language automatically (`data-count`).
+- For SEO-critical multi-language sites, prefer one URL per language (`/it/`, `/uk/`) built from the same template; the in-page switch is for demos and small sites.
+
+## Step 6. Page transitions
+
+Multi-page sites get transitions between their own pages, in the same story as the loader and gauge (`@view-transition` is on in `storymotion.css`; each template themes `::view-transition-old/new(root)`): dawn from the horizon, a page drawn like a trail, a dive into scale, a before/after wipe, a sideways chapter turn, an app-like lift, a plain crossfade for shops. Keep them under ~0.9 s; they are off with reduced motion and simply absent in browsers without support.
+
+## Step 7. Hand off, build, verify
 
 - Copy the chosen template **plus `storymotion.css` and `storymotion.js`** into the project.
 - Full / partial narrative → `scroll-narrative`: story questions, beat sheet (`beats.md`), pacing. Show the beat sheet before writing content.
-- Every site → `web-motion` for timing, easing, performance and accessibility.
+- Every site → `web-motion` for timing, easing, performance and accessibility. React / Astro / Next → `web-motion/references/frameworks.md`.
 - Replace placeholders (gradients) with real high-resolution photos; never ship the placeholder art.
 - Mixed sites (shop + about page, SaaS + case study): one template per page type, one shared look (take tokens from the main page).
+- **Before saying it is done, run the check** and fix every FAIL:
+
+  ```
+  npm i -D playwright                     # once per project; uses installed Chrome, else: npx playwright install chromium
+  node <this skill>/scripts/check.cjs <site folder | http://localhost:port/page.html> --out check-shots
+  ```
+
+  It checks 375 / 1440 px overflow (and names the outermost element that sticks out), console and network errors, the loader (name fits, it leaves), `[data-brand]` consistency, every pinned scene reaching its end, every language, reduced motion and no-JS, and saves screenshots of the top and every scene. Look at the screenshots too: the script cannot judge whether the story reads well.

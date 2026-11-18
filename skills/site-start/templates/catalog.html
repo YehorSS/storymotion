@@ -4,13 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Catalog — StoryMotion template</title>
-<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader:' + location.pathname) && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
+<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader') && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
 <link rel="stylesheet" href="storymotion.css">
 <style>
   /* Template: CATALOG — no narrative. A shop or catalogue where people compare and pick.
      Motion only orients and confirms: filter reflow (View Transitions), card hover, quick view, add-to-bag feedback. */
-  :root { --ink: #1b1a17; --muted: #75716a; --bg: #fbfaf7; --line: #e6e2da; --accent: #b4532a;
-          font: 400 15px/1.5 Inter, "Segoe UI", system-ui, sans-serif; }
+  :root { /* BRAND — the name lives in every [data-brand] element; colours and fonts are set here */
+          --font-display: Inter, "Segoe UI", system-ui, sans-serif; --font-mono: ui-monospace, monospace;
+          --ink: #1b1a17; --muted: #75716a; --bg: #fbfaf7; --line: #e6e2da; --accent: #b4532a;
+          font: 400 15px/1.5 var(--font-display); }
   h1 { font-size: clamp(32px, 4.5vw, 64px); font-weight: 600; letter-spacing: -.03em; line-height: 1; }
   header, main { padding: 0 max(16px, 4vw); }
   header { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; height: 64px;
@@ -61,15 +63,18 @@
   .l-name { font-weight: 600; letter-spacing: .3em; }
   .l-line { width: 120px; height: 1px; background: var(--line); position: relative; }
   .l-line::after { content: ""; position: absolute; inset: 0; background: var(--ink); transform-origin: left; scale: var(--lp, 0) 1; }
+
+  /* Page transition = a plain quick crossfade; shoppers are moving between products */
+  ::view-transition-group(root) { animation-duration: 200ms; }
 </style>
 </head>
 <body>
 <div class="loader" aria-hidden="true" data-min="700">
-  <div class="l-name">ARGILLA</div>
+  <div class="l-name" data-brand>ARGILLA</div>
   <i class="l-line"></i>
 </div>
 <div class="gauge" aria-hidden="true"><i></i></div>
-<header><b>ARGILLA</b><button class="bag" type="button">Bag <output>0</output></button></header>
+<header><b data-brand>ARGILLA</b><button class="bag" type="button">Bag <output>0</output></button></header>
 
 <main>
   <div class="intro">

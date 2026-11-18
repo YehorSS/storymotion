@@ -13,6 +13,10 @@ html::-webkit-scrollbar { display: none; }
 body { background: var(--bg); color: var(--ink); overflow-x: clip; }
 img { display: block; max-width: 100%; }
 
+/* Page transitions between pages of the same site (Chrome, Edge, Safari 18+); each template themes
+   ::view-transition-old/new(root) to match its story. Browsers without support simply navigate. */
+@view-transition { navigation: auto; }
+
 /* Reveal once (only when JS runs, so content is visible without it) */
 .js [data-reveal] { opacity: 0; translate: 0 24px; transition: opacity var(--dur-enter) var(--ease-out), translate var(--dur-enter) var(--ease-out); transition-delay: calc(var(--i, 0) * 70ms); }
 .js [data-reveal].in { opacity: 1; translate: 0 0; }
@@ -45,7 +49,7 @@ img { display: block; max-width: 100%; }
 
 /* Chapter label */
 .chapter { position: fixed; left: max(16px, 2vw); top: 20px; z-index: 50; mix-blend-mode: difference; color: #fff;
-           font: 600 12px/1 ui-monospace, monospace; letter-spacing: .18em; text-transform: uppercase; }
+           font: 600 12px/1 var(--font-mono, ui-monospace, monospace); letter-spacing: .18em; text-transform: uppercase; }
 
 /* Custom scroll gauge: native bar hidden, this one is draggable and clickable.
    This is only the neutral base: each template restyles the track (::before), thumb (i, i::after readout)
@@ -57,12 +61,13 @@ img { display: block; max-width: 100%; }
 .gauge b { position: absolute; left: 2px; right: 2px; height: 2px; translate: 0 -50%; background: currentColor; opacity: .55; }
 /* Hovering the gauge shows the chapters as a table of contents */
 .gauge b::after { content: attr(data-label); position: absolute; right: calc(100% + 14px); top: 50%; translate: 0 -50%; white-space: nowrap;
-                  font: 600 11px/1 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; opacity: 0;
+                  font: 600 11px/1 var(--font-mono, ui-monospace, monospace); letter-spacing: .1em; text-transform: uppercase; opacity: 0;
                   transition: opacity var(--dur-ui) var(--ease-out); pointer-events: none; }
 .gauge:hover b::after { opacity: 1; }
 @media (pointer: coarse) { .gauge { display: none; } }
 
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
   [data-split] .w > span { animation: none; }
   .js .loader { display: none; }
   .js [data-reveal] { opacity: 1; translate: none; transition: none; }
