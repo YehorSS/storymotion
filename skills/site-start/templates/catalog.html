@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catalog — StoryMotion template</title>
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="storymotion.css">
+<style>
+  /* Template: CATALOG — no narrative. A shop or catalogue where people compare and pick.
+     Motion only orients and confirms: filter reflow (View Transitions), card hover, quick view, add-to-bag feedback. */
+  :root { --ink: #1b1a17; --muted: #75716a; --bg: #fbfaf7; --line: #e6e2da; --accent: #b4532a;
+          font: 400 15px/1.5 Inter, "Segoe UI", system-ui, sans-serif; }
+  h1 { font-size: clamp(32px, 4.5vw, 64px); font-weight: 600; letter-spacing: -.03em; line-height: 1; }
+  header, main { padding: 0 max(16px, 4vw); }
+  header { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; height: 64px;
+           background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  header b { letter-spacing: .1em; }
+  .bag { position: relative; padding: 9px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font: inherit; cursor: pointer; }
+  .bag output { display: inline-grid; place-items: center; min-width: 22px; height: 22px; margin-left: 6px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 12px; }
+  .bag.bump output { animation: bump 420ms var(--ease-out); }
+  @keyframes bump { 40% { scale: 1.35; background: var(--accent); } }
+
+  .intro { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 20px; padding: 7vh 0 4vh; }
+  .intro p { color: var(--muted); max-width: 40ch; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .chip { padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font: inherit; cursor: pointer;
+          transition: background var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out), border-color var(--dur-ui); }
+  .chip[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chip:focus-visible, .card button:focus-visible, .bag:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 28px 20px; padding-bottom: 14vh; }
+  .card { display: grid; gap: 10px; }
+  .card[hidden] { display: none; }
+  .ph { aspect-ratio: 4 / 5; border-radius: 10px; background: var(--img); background-size: cover; overflow: clip; position: relative; }
+  .ph::after { content: ""; position: absolute; inset: 0; background: inherit; transition: scale 700ms var(--ease-out); }
+  .card:hover .ph::after { scale: 1.05; }
+  .card .row { display: flex; justify-content: space-between; gap: 10px; }
+  .card .row span { color: var(--muted); }
+  .card button { justify-self: start; padding: 8px 0; border: 0; background: none; font: inherit; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+  dialog { border: 0; padding: 0; border-radius: 16px; width: min(860px, 92vw); background: var(--bg); color: var(--ink); }
+  dialog::backdrop { background: #1b1a1766; backdrop-filter: blur(3px); }
+  dialog[open] { animation: pop var(--dur-ui) var(--ease-out); }
+  @keyframes pop { from { opacity: 0; translate: 0 16px; scale: .98; } }
+  .qv { display: grid; grid-template-columns: 1fr 1fr; }
+  .qv .ph { border-radius: 0; aspect-ratio: auto; min-height: 380px; }
+  .qv .info { padding: 32px; display: grid; align-content: start; gap: 14px; }
+  .qv .add { padding: 14px 20px; border: 0; border-radius: 10px; background: var(--ink); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+  .qv .close { justify-self: end; border: 0; background: none; font-size: 22px; cursor: pointer; }
+  ::view-transition-group(*) { animation-duration: var(--dur-ui); animation-timing-function: var(--ease-move); }
+  @media (max-width: 640px) { .qv { grid-template-columns: 1fr; } .qv .ph { min-height: 260px; } }
+
+  /* Scroll gauge = out of the way: a hairline and a small dark thumb; shopping is the point here */
+  .gauge { mix-blend-mode: normal; color: var(--ink); width: 8px; right: 6px; top: 20vh; bottom: 20vh; }
+  .gauge::before { inset: 0 3px; background: var(--line); }
+  .gauge i { left: 2px; right: 2px; height: 32px; border-radius: 2px; top: calc(var(--progress, 0) * (100% - 32px)); }
+</style>
+</head>
+<body>
+<div class="gauge" aria-hidden="true"><i></i></div>
+<header><b>ARGILLA</b><button class="bag" type="button">Bag <output>0</output></button></header>
+
+<main>
+  <div class="intro">
+    <h1>Glazed by hand,<br>fired twice.</h1>
+    <p>32 pieces in stock. Every glaze is mixed in the studio; colour varies a little, on purpose.</p>
+  </div>
+  <div class="filters" role="group" aria-label="Filter">
+    <button class="chip" aria-pressed="true" data-f="all">All</button>
+    <button class="chip" aria-pressed="false" data-f="cups">Cups</button>
+    <button class="chip" aria-pressed="false" data-f="plates">Plates</button>
+    <button class="chip" aria-pressed="false" data-f="vases">Vases</button>
+  </div>
+  <div class="grid">
+    <!-- Replace --img with real product photos (≥ 1600 px, srcset). Gradients are placeholders. -->
+    <article class="card" data-cat="cups" style="--img: radial-gradient(circle at 50% 60%, #c9d6cf 0 30%, #e9e4da 31%)"><div class="ph"></div><div class="row"><b>Fog cup</b><span>€28</span></div><button type="button">Quick view</button></article>
+    <article class="card" data-cat="plates" style="--img: radial-gradient(circle, #d7a07c 0 38%, #b4532a 39% 44%, #efe8dc 45%)"><div class="ph"></div><div class="row"><b>Rust plate</b><span>€42</span></div><button type="button">Quick view</button></article>
+    <article class="card" data-cat="vases" style="--img: linear-gradient(#efe8dc 0 20%, #2f4a5a 20% 80%, #efe8dc 80%)"><div class="ph"></div><div class="row"><b>Harbour vase</b><span>€96</span></div><button type="button">Quick view</button></article>
+    <article class="card" data-cat="cups" style="--img: radial-gradient(circle at 50% 60%, #e7c26a 0 30%, #efe8dc 31%)"><div class="ph"></div><div class="row"><b>Honey cup</b><span>€28</span></div><button type="button">Quick view</button></article>
+    <article class="card" data-cat="plates" style="--img: radial-gradient(circle, #9fb7c9 0 40%, #efe8dc 41%)"><div class="ph"></div><div class="row"><b>Tide plate</b><span>€42</span></div><button type="button">Quick view</button></article>
+    <article class="card" data-cat="vases" style="--img: linear-gradient(#efe8dc 0 10%, #6e7d4e 10% 90%, #efe8dc 90%)"><div class="ph"></div><div class="row"><b>Olive vase</b><span>€110</span></div><button type="button">Quick view</button></article>
+  </div>
+</main>
+
+<dialog aria-label="Quick view">
+  <div class="qv"><div class="ph"></div><div class="info"><button class="close" type="button" aria-label="Close">×</button><h2></h2><span class="price"></span><p>Stoneware, food safe, dishwasher safe. Ships in 2–3 days, wrapped in paper from the studio.</p><button class="add" type="button">Add to bag</button></div></div>
+</dialog>
+
+<script>
+  const vt = fn => (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+    ? document.startViewTransition(fn) : fn();
+  const cards = [...document.querySelectorAll('.card')];
+  cards.forEach((c, i) => c.style.viewTransitionName = `card-${i}`);
+
+  // Filters: cards glide to their new places instead of jumping.
+  document.querySelectorAll('.chip').forEach(chip => chip.addEventListener('click', () => vt(() => {
+    document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', c === chip));
+    cards.forEach(c => c.hidden = chip.dataset.f !== 'all' && c.dataset.cat !== chip.dataset.f);
+  })));
+
+  // Quick view + add-to-bag feedback.
+  const dlg = document.querySelector('dialog'), bag = document.querySelector('.bag'), count = bag.querySelector('output');
+  cards.forEach(c => c.querySelector('button').addEventListener('click', () => {
+    dlg.querySelector('.ph').style.cssText = c.getAttribute('style');
+    dlg.querySelector('h2').textContent = c.querySelector('b').textContent;
+    dlg.querySelector('.price').textContent = c.querySelector('.row span').textContent;
+    dlg.showModal();
+  }));
+  dlg.querySelector('.close').addEventListener('click', () => dlg.close());
+  dlg.querySelector('.add').addEventListener('click', () => {
+    count.value = +count.value + 1;
+    bag.classList.remove('bump'); void bag.offsetWidth; bag.classList.add('bump');
+    dlg.close();
+  });
+</script>
+<script src="storymotion.js"></script>
+</body>
+</html>

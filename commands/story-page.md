@@ -1,10 +1,11 @@
 ---
-description: Build a scroll-story page with motion — beat sheet first, then code
-argument-hint: <what the page is about>
+description: Start a website with the right amount of story and motion — site kind, template choice, then build
+argument-hint: <what the site is about>
 ---
 
-Build a narrative, animated web page about: $ARGUMENTS
+Build a website about: $ARGUMENTS
 
-1. Follow the `scroll-narrative` skill: answer hero / want / obstacle / turn / after, pick one narrative device, and write `beats.md`. Show me the beat sheet and wait for my OK.
-2. Then build it from the skill's `templates/index.html`, adding motion per the `web-motion` skill.
-3. Verify at 375 px and 1440 px, with reduced motion on and off, and report what you checked.
+1. Follow the `site-start` skill: decide the site kind and narrative level (full / partial / none), then offer me the fitting templates from its `templates/CATALOG.md` plus "from scratch". Wait for my choice.
+2. If there is a narrative (full or partial), follow `scroll-narrative`: write `beats.md` and show it to me before writing the page.
+3. Build from the chosen template (copy `storymotion.css` and `storymotion.js` too), with motion per `web-motion`.
+4. Verify at 375 px and 1440 px, with reduced motion on and off, and report what you checked.

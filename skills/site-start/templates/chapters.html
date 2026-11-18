@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapters — StoryMotion template</title>
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="storymotion.css">
+<style>
+  /* Template: CHAPTERS — horizontal case study. Vertical scroll moves a pinned track sideways, chapter by chapter.
+     Black, white, acid accent, heavy grotesk. */
+  :root { --ink: #f2f2f2; --muted: #8a8a8a; --bg: #0a0a0a; --accent: #d4ff3a;
+          font: 400 clamp(15px, 1vw, 18px)/1.55 "Helvetica Neue", Arial, sans-serif; }
+  h1, h2, h3 { font-weight: 800; letter-spacing: -.045em; line-height: .9; }
+  h1 { font-size: clamp(52px, 11vw, 180px); }
+  h2 { font-size: clamp(32px, 5vw, 76px); }
+  h3 { font-size: clamp(30px, 3.6vw, 56px); }
+  .mono { font: 500 12px/1.3 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  section:not(.scene) { padding: 0 max(16px, 5vw); }
+
+  .hook { min-height: 100svh; display: grid; align-content: space-between; padding-block: 12vh 8vh; }
+  .hook h1 span.acc { color: var(--accent); }
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px; border-top: 1px solid #ffffff26; padding-top: 20px; }
+  .facts b { display: block; color: var(--ink); font-size: 15px; letter-spacing: 0; text-transform: none; margin-top: 6px; }
+
+  /* Horizontal track: translate = p × (viewport − track width) */
+  .scene { height: 500vh; }
+  .stage { display: grid; align-content: center; }
+  .track { display: flex; gap: 4vw; width: max-content; padding-inline: 5vw; translate: calc(var(--p, 0) * (100vw - 100%)) 0; will-change: translate; }
+  .card { width: min(78vw, 980px); height: 72svh; display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; padding: 3vw; border: 1px solid #ffffff1f; border-radius: 6px; background: #121212; }
+  .card .num { font: 800 clamp(80px, 14vw, 220px)/.8 "Helvetica Neue", Arial, sans-serif; letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 1.5px var(--accent); }
+  .card .text { display: grid; align-content: end; gap: 16px; }
+  .card p { color: var(--muted); max-width: 40ch; }
+  .card .visual { border-radius: 4px; background: var(--img, linear-gradient(135deg, #1d1d1d, #2b2b2b)); background-size: cover; position: relative; overflow: clip; }
+  .card .visual::after { content: attr(data-note); position: absolute; left: 14px; bottom: 12px; font: 500 11px/1 ui-monospace, monospace; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+  .counter { position: absolute; left: 5vw; bottom: 5vh; display: flex; gap: 16px; align-items: center; }
+  .counter .bar { width: 160px; height: 2px; background: #ffffff26; position: relative; }
+  .counter .bar::after { content: ""; position: absolute; inset: 0; background: var(--accent); transform-origin: left; scale: var(--p, 0) 1; }
+
+  .outcome { padding-block: 22vh; display: grid; gap: 36px; }
+  .outcome .big { font: 800 clamp(64px, 12vw, 200px)/.85 "Helvetica Neue", Arial, sans-serif; letter-spacing: -.06em; color: var(--accent); }
+  .end { min-height: 80svh; display: grid; place-content: center; gap: 28px; }
+  .cta { justify-self: start; padding: 20px 30px; background: var(--accent); color: #0a0a0a; text-decoration: none; font-weight: 800; letter-spacing: -.01em;
+         transition: translate var(--dur-ui) var(--ease-out); }
+  .cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+
+  @media (max-width: 800px) {
+    .scene { height: 420vh; }
+    .card { width: 86vw; height: 76svh; grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; }
+    .card .num { font-size: 90px; }
+  }
+
+  /* Scroll gauge = the chapter index: numbered segments, the acid block marks where you are */
+  .gauge { mix-blend-mode: normal; color: var(--accent); width: 18px; }
+  .gauge::before { inset: 0 8px; background: #ffffff26; }
+  .gauge::after { content: ""; position: absolute; left: 8px; right: 8px; top: 0; height: calc(var(--progress, 0) * 100%); background: var(--accent); }
+  .gauge i { left: 3px; right: 3px; height: 28px; border-radius: 0; top: calc(var(--progress, 0) * (100% - 28px)); background: var(--accent); }
+  .gauge b { left: 0; right: 0; height: 2px; background: var(--bg); opacity: 1; z-index: 1; }
+  .gauge b::before { content: attr(data-n); position: absolute; right: calc(100% + 8px); top: 50%; translate: 0 -50%; font: 500 10px/1 ui-monospace, monospace; color: var(--muted); transition: opacity var(--dur-ui); }
+  .gauge b::after { color: var(--ink); }
+  .gauge:hover b::before { opacity: 0; }
+</style>
+</head>
+<body>
+<div class="chapter" aria-live="polite">Case — Ferrylink</div>
+<div class="gauge" aria-hidden="true"><i></i></div>
+
+<main>
+  <section class="hook" data-chapter="Case — Ferrylink">
+    <span class="mono">Case study · brand + app · 2026</span>
+    <h1 data-split>Ferries that feel like trains.</h1>
+    <div class="facts" data-reveal>
+      <div class="mono">Client<b>Ferrylink, 14 routes</b></div>
+      <div class="mono">Scope<b>Brand, app, signage</b></div>
+      <div class="mono">Time<b>7 months</b></div>
+      <div class="mono">Result<b>+38 % app bookings</b></div>
+    </div>
+  </section>
+
+  <section class="scene chapters" data-chapter="Process" data-steps="5">
+    <div class="stage">
+      <div class="track">
+        <article class="card"><div class="num">01</div><div class="text"><span class="mono">Problem</span><h3>Nobody knew which boat was theirs.</h3><p>Four logos, three apps, tickets on paper. Queues started an hour before departure.</p></div></article>
+        <article class="card"><div class="visual" data-note="Field research photo"></div><div class="text"><span class="mono">02 · Research</span><h3>Two weeks on the decks.</h3><p>We rode every route and timed every step from car park to seat.</p></div></article>
+        <article class="card"><div class="num">03</div><div class="text"><span class="mono">Idea</span><h3>Routes as lines, ports as stations.</h3><p>A metro map for the sea: one colour per route, used on boats, signs and the app.</p></div></article>
+        <article class="card"><div class="visual" data-note="App screens"></div><div class="text"><span class="mono">04 · Product</span><h3>One tap to the right gate.</h3><p>The ticket becomes a live card: gate, delay, deck, all in the route colour.</p></div></article>
+        <article class="card"><div class="num">05</div><div class="text"><span class="mono">Launch</span><h3>Repainted 22 boats in one winter.</h3><p>Signs went up on all 14 routes the same morning. Queues halved in the first month.</p></div></article>
+      </div>
+      <div class="counter mono"><span class="cur">01</span><span class="bar"></span><span>05</span></div>
+    </div>
+  </section>
+
+  <section class="outcome" data-chapter="Outcome">
+    <span class="mono" data-reveal>Six months after launch</span>
+    <div class="big" data-reveal style="--i:1">+<span data-count="38">38</span>%</div>
+    <h2 data-reveal style="--i:2">more trips booked in the app, and half the queue at the gate.</h2>
+  </section>
+
+  <section class="end" data-chapter="Next">
+    <h2 data-reveal>Have a messy system that needs one line?</h2>
+    <a class="cta" href="#" data-reveal style="--i:1" data-magnetic>Write to the studio →</a>
+  </section>
+</main>
+<script>
+  const ch = document.querySelector('.chapters'), cur = ch.querySelector('.cur');
+  ch.addEventListener('progress', ({ detail: { step } }) => cur.textContent = String(step + 1).padStart(2, '0'));
+</script>
+<script src="storymotion.js"></script>
+</body>
+</html>

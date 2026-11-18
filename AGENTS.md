@@ -1,6 +1,6 @@
 # StoryMotion
 
-When the task is a website or page that should animate or tell a story:
+For any new website or page, start with `skills/site-start/SKILL.md`: it decides the site kind, whether it needs a story (full / partial / none), and always asks the user which template to use (catalog: `skills/site-start/templates/CATALOG.md`).
 
-- Animation of any kind → follow `skills/web-motion/SKILL.md` (code in `skills/web-motion/references/recipes.md`).
-- Narrative / scrollytelling page → follow `skills/scroll-narrative/SKILL.md`, start from `skills/scroll-narrative/templates/index.html`.
+- Narrative pages or a single story scene → `skills/scroll-narrative/SKILL.md`.
+- Any animation → `skills/web-motion/SKILL.md` (code in `skills/web-motion/references/recipes.md`).

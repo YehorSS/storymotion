@@ -89,14 +89,17 @@ Reduced motion: keep the captions switching, drop the travel (`.sun { translate:
 ## Split text stagger (headline entrance)
 
 ```js
+// Letters wrapped per word, so the headline still breaks between words on small screens.
 for (const el of document.querySelectorAll('[data-split]')) {
   el.setAttribute('aria-label', el.textContent);
-  el.innerHTML = [...el.textContent].map((c, i) =>
-    `<span aria-hidden="true" style="--i:${i}">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+  let i = 0;
+  el.innerHTML = el.textContent.trim().split(/\s+/).map(word =>
+    `<span class="w" aria-hidden="true">${[...word].map(c => `<span style="--i:${i++}">${c}</span>`).join('')}</span>`).join(' ');
 }
 ```
 ```css
-[data-split] span { display: inline-block; animation: letter var(--dur-enter) var(--ease-out) both; animation-delay: calc(var(--i) * 28ms); }
+[data-split] .w { display: inline-block; white-space: nowrap; }
+[data-split] .w > span { display: inline-block; animation: letter var(--dur-enter) var(--ease-out) both; animation-delay: calc(var(--i) * 28ms); }
 @keyframes letter { from { opacity: 0; translate: 0 .5em; filter: blur(6px); } }
 ```
 Split by words instead of letters for anything longer than ~20 characters.
@@ -150,6 +153,12 @@ mm.add('(prefers-reduced-motion: no-preference)', () => {
 `gsap.matchMedia()` reverts everything automatically when reduced motion turns on.
 
 ## Custom scroll gauge (when the native scrollbar is hidden)
+
+The gauge is part of the story, not chrome. Style it with the site's device and look:
+time axis → a sky-coloured track with the sun as thumb and a clock readout; path → a dotted trail, walked part filled, stops as rings, km readout;
+zoom → a ruler with ticks and the scale as readout; before/after → two-tone track with a year handle; chapters → numbered segments;
+product or shop → a quiet, slim rail. Mark chapters on it and show their names on hover. The templates in `site-start/templates` have one of each.
+
 
 ```css
 html { scrollbar-width: none; } html::-webkit-scrollbar { display: none; }

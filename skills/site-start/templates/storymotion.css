@@ -1,0 +1,55 @@
+/* StoryMotion base: tokens, reveals, split text, pinned stage, step captions, chapter label,
+   custom scroll gauge, reduced motion. Each template sets --ink, --muted, --bg, --accent. */
+:root {
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-in: cubic-bezier(.7, 0, .84, 0);
+  --ease-move: cubic-bezier(.65, 0, .35, 1);
+  --dur-ui: 280ms;
+  --dur-enter: 620ms;
+}
+* { box-sizing: border-box; margin: 0; }
+html { scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
+body { background: var(--bg); color: var(--ink); overflow-x: clip; }
+img { display: block; max-width: 100%; }
+
+/* Reveal once (only when JS runs, so content is visible without it) */
+.js [data-reveal] { opacity: 0; translate: 0 24px; transition: opacity var(--dur-enter) var(--ease-out), translate var(--dur-enter) var(--ease-out); transition-delay: calc(var(--i, 0) * 70ms); }
+.js [data-reveal].in { opacity: 1; translate: 0 0; }
+
+/* Headline split into letters */
+[data-split] .w { display: inline-block; white-space: nowrap; }
+[data-split] .w > span { display: inline-block; animation: sm-letter var(--dur-enter) var(--ease-out) both; animation-delay: calc(var(--i) * 28ms); }
+@keyframes sm-letter { from { opacity: 0; translate: 0 .45em; filter: blur(6px); } }
+
+/* Pinned scene: tall section + sticky stage; children read --p (0 → 1) */
+.scene { position: relative; }
+.stage { position: sticky; top: 0; height: 100svh; overflow: clip; }
+/* Outgoing step leaves fast; incoming waits for it, so two captions never overlap */
+.js [data-step] { opacity: 0; translate: 0 -12px; transition: opacity 180ms var(--ease-in), translate 180ms var(--ease-in); }
+.js [data-step].on { opacity: 1; translate: 0 0; transition: opacity 420ms var(--ease-out) 160ms, translate 420ms var(--ease-out) 160ms; }
+
+/* Chapter label */
+.chapter { position: fixed; left: max(16px, 2vw); top: 20px; z-index: 50; mix-blend-mode: difference; color: #fff;
+           font: 600 12px/1 ui-monospace, monospace; letter-spacing: .18em; text-transform: uppercase; }
+
+/* Custom scroll gauge: native bar hidden, this one is draggable and clickable.
+   This is only the neutral base: each template restyles the track (::before), thumb (i, i::after readout)
+   and chapter marks (b) so the scroll speaks the site's story and style. */
+.gauge { position: fixed; right: 10px; top: 12vh; bottom: 12vh; width: 14px; cursor: pointer; touch-action: none; z-index: 50;
+         color: #fff; mix-blend-mode: difference; }
+.gauge::before { content: ""; position: absolute; inset: 0 6px; background: color-mix(in srgb, currentColor 30%, transparent); }
+.gauge i { position: absolute; left: 4px; right: 4px; top: calc(var(--progress, 0) * (100% - 44px)); height: 44px; background: currentColor; border-radius: 3px; }
+.gauge b { position: absolute; left: 2px; right: 2px; height: 2px; translate: 0 -50%; background: currentColor; opacity: .55; }
+/* Hovering the gauge shows the chapters as a table of contents */
+.gauge b::after { content: attr(data-label); position: absolute; right: calc(100% + 14px); top: 50%; translate: 0 -50%; white-space: nowrap;
+                  font: 600 11px/1 ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; opacity: 0;
+                  transition: opacity var(--dur-ui) var(--ease-out); pointer-events: none; }
+.gauge:hover b::after { opacity: 1; }
+@media (pointer: coarse) { .gauge { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-split] .w > span { animation: none; }
+  .js [data-reveal] { opacity: 1; translate: none; transition: none; }
+  .js [data-step], .js [data-step].on { translate: none; transition: opacity 1ms; }
+}

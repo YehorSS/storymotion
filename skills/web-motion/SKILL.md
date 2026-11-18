@@ -62,6 +62,7 @@ Do not add a library for what CSS already does. Do not add smooth-scroll hijacki
 - Auto-playing motion longer than 5 s gets a pause control (WCAG 2.2.2).
 - Focus states are animated at most subtly and never hidden.
 - If the native scrollbar is hidden for style, provide a custom draggable, clickable progress gauge; wheel, keyboard and touch scrolling keep working.
+- That gauge belongs to the site's story and style: same palette, type and metaphor as the narrative (clock for a day, km for a route, scale for a zoom, year for a before/after, numbered chapters for a case study; a quiet slim rail for shops and products). Never a generic grey bar on a styled site.
 
 ## 6. Workflow
 

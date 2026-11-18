@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day Cycle — StoryMotion template</title>
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="storymotion.css">
+<style>
+  /* Template: DAY CYCLE — time axis. A whole day passes in one pinned scene. Warm, editorial serif. */
+  :root { --ink: #f4efe6; --muted: #b9b1a3; --bg: #12100e; --accent: #f3b562;
+          font: 400 clamp(16px, 1.1vw, 19px)/1.55 ui-serif, Georgia, serif; }
+  h1, h2 { font-weight: 400; letter-spacing: -.02em; line-height: 1.02; }
+  h1 { font-size: clamp(48px, 10vw, 150px); }
+  h2 { font-size: clamp(34px, 5.5vw, 84px); }
+  .eyebrow { font: 600 12px/1 ui-monospace, monospace; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+  section:not(.scene) { padding: 0 max(16px, 6vw); }
+
+  .hook { min-height: 100svh; display: grid; align-content: end; gap: 24px; padding-bottom: 12vh; }
+  .hook p { max-width: 34ch; color: var(--muted); font-size: 1.15em; }
+  .cta { display: inline-block; padding: 16px 28px; border-radius: 999px; background: var(--accent); color: #1a120a;
+         font: 600 15px/1 system-ui, sans-serif; text-decoration: none; justify-self: start;
+         transition: translate var(--dur-ui) var(--ease-out), scale 160ms var(--ease-out); }
+  .cta:active { scale: .97; }
+  .cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+
+  .setup { padding-block: 22vh; display: grid; gap: 28px; max-width: 900px; }
+  .setup p { color: var(--muted); max-width: 46ch; }
+
+  /* Pinned day: sky = tall gradient slid by --p, sun travels an arc */
+  .scene { height: 320vh; }
+  .stage { background: linear-gradient(#f0a65a, #9cc9e6 35%, #e98a5c 68%, #0b1026) 0 calc(var(--p, 0) * 100%) / 100% 400%; }
+  .sun { position: absolute; left: 8vw; bottom: 18vh; width: 16vmin; aspect-ratio: 1; border-radius: 50%;
+         background: radial-gradient(circle at 35% 35%, #fff6d8, #ffcf6b 55%, #f08a3c); box-shadow: 0 0 12vmin #ffcf6b88;
+         translate: calc(var(--p, 0) * 68vw) calc(sin(var(--p, 0) * 180deg) * -52vh); opacity: calc(1.25 - var(--p, 0)); }
+  .ground { position: absolute; inset: auto 0 0; height: 20vh; background: #15110d; }
+  .caps { position: absolute; left: max(16px, 6vw); right: max(16px, 6vw); bottom: 26vh; }
+  .cap { position: absolute; bottom: 0; max-width: 900px; }
+  .cap .eyebrow { display: block; margin-bottom: 12px; color: #1a120a; }
+  .cap h2 { color: #1a120a; transition: color 400ms; }
+  .scene[data-dark] .cap h2 { color: var(--ink); }
+  .scene[data-dark] .cap .eyebrow { color: var(--accent); }
+
+  .proof { padding-block: 24vh; display: grid; gap: 48px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; }
+  .stat b { display: block; font-size: clamp(44px, 6vw, 88px); font-weight: 400; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); }
+
+  .end { min-height: 90svh; display: grid; place-content: center; text-align: center; gap: 28px; }
+  .end .cta { justify-self: center; }
+
+  @media (max-width: 700px) { .scene { height: 220vh; } }
+
+  /* Scroll gauge = the day: sky-coloured track, the sun is the thumb, the clock is the readout */
+  .gauge { mix-blend-mode: normal; color: var(--accent); width: 20px; }
+  .gauge::before { inset: 0 8px; border-radius: 2px; background: linear-gradient(#f0a65a, #9cc9e6 35%, #e98a5c 68%, #3a4a8a); }
+  .gauge i { left: 2px; right: 2px; height: 16px; border-radius: 50%; top: calc(var(--progress, 0) * (100% - 16px));
+             background: radial-gradient(circle at 35% 35%, #fff6d8, #ffcf6b 55%, #f08a3c); box-shadow: 0 0 14px #ffcf6b99; }
+  .gauge i::after { content: attr(data-t); position: absolute; right: 28px; top: 50%; translate: 0 -50%; font: 600 11px/1 ui-monospace, monospace; color: var(--accent); padding: 5px 7px; border-radius: 4px; background: #12100ed9; transition: opacity var(--dur-ui); }
+  .gauge b { left: 4px; right: 4px; height: 1px; background: var(--ink); }
+  .gauge b::after { color: var(--ink); }
+  .gauge:hover i::after { opacity: 0; }
+</style>
+</head>
+<body>
+<div class="chapter" aria-live="polite">01 — Before dawn</div>
+<div class="gauge" aria-hidden="true"><i></i></div>
+
+<main>
+  <section class="hook" data-chapter="01 — Before dawn">
+    <span class="eyebrow">Forno · bakery since 1962</span>
+    <h1 data-split>Bread before sunrise.</h1>
+    <p>140 loaves leave our oven before the city wakes up. Order tonight, pick up warm at 7.</p>
+    <a class="cta" href="#order" data-magnetic>Order for tomorrow</a>
+  </section>
+
+  <section class="setup" data-chapter="02 — The dough">
+    <span class="eyebrow" data-reveal>3:40 a.m.</span>
+    <h2 data-reveal style="--i:1">The street is dark. The dough has been rising for 18 hours.</h2>
+    <p data-reveal style="--i:2">Flour from one mill in Molise, water, salt and a starter older than the shop. Nothing else.</p>
+  </section>
+
+  <section class="scene" data-chapter="03 — One day" data-dark-after="0.75">
+    <div class="stage">
+      <div class="sun"></div>
+      <div class="ground"></div>
+      <div class="caps">
+        <div class="cap" data-step><span class="eyebrow">6:00</span><h2>First loaves out.</h2></div>
+        <div class="cap" data-step><span class="eyebrow">12:30</span><h2>Focaccia for the school next door.</h2></div>
+        <div class="cap" data-step><span class="eyebrow">17:00</span><h2>The last tray of cornetti.</h2></div>
+        <div class="cap" data-step><span class="eyebrow">21:00</span><h2>Tomorrow's dough goes to sleep.</h2></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof" data-chapter="04 — Sixty years">
+    <h2 data-reveal>That day, repeated.</h2>
+    <div class="stats">
+      <div class="stat" data-reveal style="--i:1"><b data-count="22630">22,630</b><span>days the oven has been lit</span></div>
+      <div class="stat" data-reveal style="--i:2"><b data-count="140">140</b><span>loaves before 7 a.m.</span></div>
+      <div class="stat" data-reveal style="--i:3"><b data-count="3">3</b><span>generations at the counter</span></div>
+    </div>
+  </section>
+
+  <section class="end" id="order" data-chapter="05 — Tomorrow">
+    <h2 data-reveal>Your loaf is next.</h2>
+    <a class="cta" href="#" data-reveal style="--i:1">Order for tomorrow</a>
+  </section>
+</main>
+<script>
+  // Gauge readout follows the day scene: 03:40 before it, then 06:00 → 21:00 with the sun.
+  const sunThumb = document.querySelector('.gauge i'), pad = n => String(n).padStart(2, '0');
+  document.querySelector('.scene').addEventListener('progress', ({ detail: { p: detail } }) => { const m = Math.round(detail ? 360 + detail * 900 : 220); sunThumb.dataset.t = `${pad(Math.floor(m / 60))}:${pad(m % 60)}`; });
+</script>
+<script src="storymotion.js"></script>
+</body>
+</html>

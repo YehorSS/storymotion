@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Route — StoryMotion template</title>
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="storymotion.css">
+<style>
+  /* Template: ROUTE — path device. A line is drawn across a map as you scroll; stops light up. Paper, ink, red pencil. */
+  :root { --ink: #1d1a16; --muted: #6b6257; --bg: #f1ebdf; --accent: #c2462d;
+          font: 400 clamp(16px, 1.1vw, 19px)/1.6 "Iowan Old Style", Palatino, Georgia, serif; }
+  h1, h2 { font-weight: 400; font-style: italic; letter-spacing: -.01em; line-height: 1.05; }
+  h1 { font-size: clamp(46px, 8.5vw, 132px); }
+  h2 { font-size: clamp(30px, 4.6vw, 68px); }
+  .kicker { font: 500 13px/1.2 ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  section:not(.scene) { padding: 0 max(16px, 7vw); }
+  body { background-image: radial-gradient(#0000 60%, #c9bba322), repeating-linear-gradient(0deg, #0000 0 31px, #1d1a160a 31px 32px); }
+
+  .hook { min-height: 100svh; display: grid; align-content: center; gap: 26px; max-width: 1100px; }
+  .hook p { max-width: 40ch; color: var(--muted); font-size: 1.15em; }
+  .hook .meta { display: flex; gap: 28px; flex-wrap: wrap; font: 500 14px/1 ui-monospace, monospace; }
+  .hook .meta b { display: block; font: 400 34px/1.1 Georgia, serif; color: var(--accent); margin-bottom: 6px; }
+  .cta { justify-self: start; padding: 15px 26px; border: 1.5px solid var(--ink); color: var(--ink); text-decoration: none;
+         font: 600 14px/1 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase;
+         transition: background var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out), translate var(--dur-ui) var(--ease-out); }
+  .cta:hover { background: var(--ink); color: var(--bg); }
+  .cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+  .setup { padding-block: 20vh; display: grid; gap: 24px; max-width: 820px; }
+  .setup p { color: var(--muted); max-width: 48ch; }
+
+  /* Map scene */
+  .scene { height: 420vh; }
+  .stage { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 3vh; padding: 8vh max(16px, 5vw) 7vh; }
+  .map { width: 100%; height: 100%; min-height: 0; overflow: visible; }
+  .map .ghost { fill: none; stroke: var(--ink); stroke-opacity: .25; stroke-width: 2; stroke-dasharray: 2 9; stroke-linecap: round; }
+  .map .trail { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+  .map .stop { fill: var(--bg); stroke: var(--ink); stroke-width: 2; transition: fill 300ms, r 300ms var(--ease-out); }
+  .map .stop.passed { fill: var(--accent); stroke: var(--accent); r: 9; }
+  .map .walker { fill: var(--ink); }
+  .map .walker-halo { fill: var(--accent); opacity: .18; }
+  .map text { font: 500 15px/1 ui-monospace, monospace; fill: var(--muted); letter-spacing: .06em; }
+  .legs { position: relative; min-height: 9.5em; }
+  .leg { position: absolute; inset: auto 0 0 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 22px; align-items: baseline; max-width: 900px; }
+  .leg .km { grid-row: span 2; font: 400 clamp(40px, 6vw, 84px)/1 Georgia, serif; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .leg p { color: var(--muted); max-width: 52ch; }
+
+  .proof { padding-block: 22vh; display: grid; gap: 40px; }
+  .proof ol { list-style: none; padding: 0; display: grid; gap: 0; border-top: 1px solid #1d1a1633; }
+  .proof li { display: grid; grid-template-columns: 5ch 1fr auto; gap: 20px; padding: 18px 0; border-bottom: 1px solid #1d1a1633; }
+  .proof li span:first-child { font-family: ui-monospace, monospace; color: var(--accent); }
+  .proof li span:last-child { font-family: ui-monospace, monospace; color: var(--muted); }
+
+  .end { min-height: 85svh; display: grid; place-content: center; justify-items: center; text-align: center; gap: 26px; }
+  .end .cta { justify-self: center; }
+
+  @media (max-width: 700px) {
+    .scene { height: 320vh; }
+    .stage { padding-top: 12vh; }
+    .map text { font-size: 26px; }
+    .proof li { grid-template-columns: 4ch 1fr; } .proof li span:last-child { display: none; }
+  }
+
+  /* Scroll gauge = the trail: dotted road, walked part in red pencil, stops as rings, km as readout */
+  .gauge { mix-blend-mode: normal; color: var(--ink); }
+  .gauge::before { inset: 0 6px; background: repeating-linear-gradient(var(--ink) 0 2px, #0000 2px 8px); opacity: .35; }
+  .gauge::after { content: ""; position: absolute; left: 6px; right: 6px; top: 0; height: calc(var(--progress, 0) * 100%); background: var(--accent); }
+  .gauge i { left: 1px; right: 1px; height: 12px; border-radius: 50%; top: calc(var(--progress, 0) * (100% - 12px)); background: var(--ink); box-shadow: 0 0 0 6px #c2462d2e; z-index: 2; }
+  .gauge i::after { content: "km " attr(data-km); position: absolute; right: 24px; top: 50%; translate: 0 -50%; white-space: nowrap; font: 500 11px/1 ui-monospace, monospace; color: var(--accent); transition: opacity var(--dur-ui); }
+  .gauge b { left: 2px; right: auto; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--ink); background: var(--bg); opacity: 1; z-index: 1; }
+  .gauge:hover i::after { opacity: 0; }
+</style>
+</head>
+<body>
+<div class="chapter" aria-live="polite">I — The idea</div>
+<div class="gauge" aria-hidden="true"><i></i></div>
+
+<main>
+  <section class="hook" data-chapter="I — The idea">
+    <span class="kicker">The Salt Road · guided walk · 6 days</span>
+    <h1 data-split>412 km on foot, from the mines to the sea.</h1>
+    <p>The way salt travelled for eight centuries. We carry your bag; you carry nothing but the view.</p>
+    <div class="meta" data-reveal>
+      <div><b>412</b>kilometres</div><div><b>6</b>stages</div><div><b>May–Oct</b>departures</div>
+    </div>
+    <a class="cta" href="#book" data-magnetic>See the dates</a>
+  </section>
+
+  <section class="setup" data-chapter="II — Why walk it">
+    <span class="kicker" data-reveal>1291</span>
+    <h2 data-reveal style="--i:1">Mule trains left the mountain with white gold and came back with stories.</h2>
+    <p data-reveal style="--i:2">The road is still there: stone bridges, toll houses, inns that never closed. Walk it in order, and the landscape tells the story in the same order.</p>
+  </section>
+
+  <section class="scene route" data-chapter="III — The road">
+    <div class="stage">
+      <svg class="map" viewBox="0 0 1000 560" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <path class="ghost" d="M60,480 C170,400 210,270 330,300 S520,470 610,350 S760,120 940,80"/>
+        <path class="trail" id="route" d="M60,480 C170,400 210,270 330,300 S520,470 610,350 S760,120 940,80"/>
+        <g class="stops"></g>
+        <circle class="walker-halo" r="26"/><circle class="walker" r="7"/>
+      </svg>
+      <div class="legs">
+        <div class="leg" data-step><span class="km">0</span><h2>The mines at Halle.</h2><p>Start underground, among walls of pink salt. Leave by the old loading gate.</p></div>
+        <div class="leg" data-step><span class="km">96</span><h2>The toll bridge.</h2><p>Every sack paid here. The keeper's house is now a kitchen that serves trout.</p></div>
+        <div class="leg" data-step><span class="km">188</span><h2>Over the pass.</h2><p>The hardest day: 1,400 m up. The reward is a lake you only see from the top.</p></div>
+        <div class="leg" data-step><span class="km">301</span><h2>The vineyard valley.</h2><p>Salt bought wine here. Dinner is in the cellar where the trade was signed.</p></div>
+        <div class="leg" data-step><span class="km">412</span><h2>The sea.</h2><p>The last kilometre is downhill to the harbour. Boots off, feet in the water.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="proof" data-chapter="IV — Stages">
+    <h2 data-reveal>Six stages, one bag you never carry.</h2>
+    <ol data-reveal style="--i:1">
+      <li><span>01</span><span>Halle → Riva</span><span>68 km</span></li>
+      <li><span>02</span><span>Riva → Toll bridge</span><span>28 km</span></li>
+      <li><span>03</span><span>Toll bridge → the Pass</span><span>92 km</span></li>
+      <li><span>04</span><span>The Pass → Vinea</span><span>113 km</span></li>
+      <li><span>05</span><span>Vinea → Porto Sale</span><span>111 km</span></li>
+    </ol>
+  </section>
+
+  <section class="end" id="book" data-chapter="V — Your walk">
+    <span class="kicker" data-reveal>Next departure · 12 May</span>
+    <h2 data-reveal style="--i:1">The road is waiting where the salt left it.</h2>
+    <a class="cta" href="#" data-reveal style="--i:2">See the dates</a>
+  </section>
+</main>
+<script>
+  // Route: draw the trail and move the walker along the SVG path by scene progress.
+  const scene = document.querySelector('.route');
+  const path = scene.querySelector('#route');
+  const L = path.getTotalLength();
+  const legs = scene.querySelectorAll('.leg');
+  const names = ['Halle', 'Toll bridge', 'Pass', 'Vinea', 'Sea'];
+  const g = scene.querySelector('.stops');
+  const stops = [...legs].map((_, i) => {
+    const pt = path.getPointAtLength(L * i / (legs.length - 1));
+    g.insertAdjacentHTML('beforeend',
+      `<circle class="stop" r="6" cx="${pt.x}" cy="${pt.y}"/><text x="${pt.x + 14}" y="${pt.y - 14}">${names[i]}</text>`);
+    return g.lastElementChild.previousElementSibling;
+  });
+  path.style.strokeDasharray = L;
+  const walker = scene.querySelectorAll('.walker, .walker-halo');
+  scene.addEventListener('progress', ({ detail: { p } }) => {
+    path.style.strokeDashoffset = L * (1 - p);
+    const pt = path.getPointAtLength(L * p);
+    walker.forEach(c => { c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y); });
+    stops.forEach((c, i) => c.classList.toggle('passed', p >= i / (stops.length - 1) - 0.001));
+  });
+</script>
+<script>
+  // Gauge readout: kilometres walked, in step with the trail on the map.
+  const walkerThumb = document.querySelector('.gauge i');
+  document.querySelector('.scene').addEventListener('progress', ({ detail: { p: detail } }) => walkerThumb.dataset.km = Math.round(detail * 412));
+</script>
+<script src="storymotion.js"></script>
+</body>
+</html>
