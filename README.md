@@ -6,7 +6,7 @@ Not every site needs a story. StoryMotion first decides what kind of site it is 
 
 ## Skills
 
-- **`site-start`** is the entry point. It classifies the site (brand, travel, SaaS, shop, docs, dashboard…), picks the narrative level and always offers the fitting templates (or "from scratch") before any code.
+- **`site-start`** is the entry point. It classifies the site (brand, travel, SaaS, shop, docs, dashboard…), picks the narrative level and always offers the fitting templates (or "from scratch") before any code. It also designs the loading screen from the site name, in the same story and style.
 - **`scroll-narrative`** covers story questions, the narrative device, the beat sheet and pacing rules.
 - **`web-motion`** covers the choice of tool (CSS, scroll-driven animations, View Transitions, WAAPI, GSAP), timing and easing, choreography, performance and accessibility, plus copy-ready recipes.
 - **`/story-page <topic>`** runs the whole flow.
@@ -27,7 +27,7 @@ Seven templates, each with a different device, look and motion. Full description
 
 Preview: `cd skills/site-start/templates && python -m http.server`, then open http://localhost:8000.
 
-Every template uses no dependencies, works without JS (content stays visible), respects `prefers-reduced-motion`, and replaces the native scrollbar with a draggable progress gauge.
+Every template has a loading screen built from the site name and a scroll gauge in the same story and style. Every template uses no dependencies, works without JS (content stays visible), respects `prefers-reduced-motion`, and replaces the native scrollbar with a draggable progress gauge.
 
 ## Install
 

@@ -177,6 +177,34 @@ addEventListener('scroll', () => document.documentElement.style.setProperty('--p
   scrollY / Math.max(1, document.documentElement.scrollHeight - innerHeight)), { passive: true });
 ```
 
+## Loading screen from the site name
+
+The loader is the story's first frame, built from the name. Mark the page in `<head>` so there is no flash on repeat visits:
+
+```html
+<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader:' + location.pathname)
+  && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
+```
+```html
+<div class="loader" aria-hidden="true" data-min="1600">
+  <div class="l-name" data-name>Forno</div>   <!-- core splits it into .w > span letters with --i -->
+  <div class="l-readout">03:40</div>
+</div>
+```
+`storymotion.js` drives it: `--lp` goes 0 → 1 on `.loader` (eased), a `loaderprogress` event carries the same value for readouts,
+it ends on window load + fonts (at least `data-min`, at most 4 s), clicking skips, and `html.loading` is removed at the end so the
+hero's own entrance plays after it. Style everything from `--lp`, for example:
+
+```css
+.l-name { clip-path: inset(-10% calc((1 - var(--lp, 0)) * 100%) -10% 0); }     /* written left to right */
+.l-name { scale: calc(1 + (1 - var(--lp, 0)) * (1 - var(--lp, 0)) * 7); }       /* zooms out into place */
+.loader { background: linear-gradient(#0b1026, #f0a65a) 0 calc(var(--lp, 0) * 100%) / 100% 300%; }  /* night → dawn */
+```
+```js
+document.querySelector('.loader')?.addEventListener('loaderprogress', ({ detail }) => readout.textContent = Math.round(detail * 412) + ' km');
+```
+Base CSS (in `storymotion.css`) hides it without JS, on repeat visits and with reduced motion, and has a 6 s failsafe.
+
 ## Magnetic button (one per page, on the main CTA)
 
 ```js

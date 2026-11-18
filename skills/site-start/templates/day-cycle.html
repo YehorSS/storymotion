@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Day Cycle — StoryMotion template</title>
-<script>document.documentElement.classList.add('js')</script>
+<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader:' + location.pathname) && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
 <link rel="stylesheet" href="storymotion.css">
 <style>
   /* Template: DAY CYCLE — time axis. A whole day passes in one pinned scene. Warm, editorial serif. */
@@ -60,9 +60,25 @@
   .gauge b { left: 4px; right: 4px; height: 1px; background: var(--ink); }
   .gauge b::after { color: var(--ink); }
   .gauge:hover i::after { opacity: 0; }
+
+  /* Loader = dawn over the bakery: night sky turns to sunrise, the sun climbs, the name rises like dough, clock 03:40 -> 06:00 */
+  .loader { background: linear-gradient(#0b1026, #3a4a8a 45%, #f0a65a) 0 calc(var(--lp, 0) * 100%) / 100% 300%; }
+  .loader::after { content: ""; position: absolute; inset: 56% 0 0; background: var(--bg); }
+  .l-sun { position: absolute; left: 50%; top: 56%; width: 26vmin; aspect-ratio: 1; border-radius: 50%;
+           translate: -50% calc(10vmin - var(--lp, 0) * 24vmin);
+           background: radial-gradient(circle at 35% 35%, #fff6d8, #ffcf6b 55%, #f08a3c); box-shadow: 0 0 14vmin #ffcf6b88; }
+  .l-name { position: relative; z-index: 1; translate: 0 -11vh; font: 400 clamp(72px, 16vw, 220px)/1 ui-serif, Georgia, serif; letter-spacing: -.03em; }
+  .l-name .w > span { animation: l-rise 900ms var(--ease-out) both; animation-delay: calc(200ms + var(--i) * 90ms); }
+  @keyframes l-rise { from { opacity: 0; translate: 0 .5em; filter: blur(8px); } }
+  .l-clock { position: absolute; z-index: 1; bottom: 14vh; font: 600 13px/1 ui-monospace, monospace; letter-spacing: .2em; color: var(--accent); }
 </style>
 </head>
 <body>
+<div class="loader" aria-hidden="true">
+  <div class="l-sun"></div>
+  <div class="l-name" data-name>Forno</div>
+  <div class="l-clock">03:40</div>
+</div>
 <div class="chapter" aria-live="polite">01 — Before dawn</div>
 <div class="gauge" aria-hidden="true"><i></i></div>
 
@@ -111,6 +127,13 @@
   // Gauge readout follows the day scene: 03:40 before it, then 06:00 → 21:00 with the sun.
   const sunThumb = document.querySelector('.gauge i'), pad = n => String(n).padStart(2, '0');
   document.querySelector('.scene').addEventListener('progress', ({ detail: { p: detail } }) => { const m = Math.round(detail ? 360 + detail * 900 : 220); sunThumb.dataset.t = `${pad(Math.floor(m / 60))}:${pad(m % 60)}`; });
+</script>
+<script>
+  // Loader readout: the clock runs from 03:40 to 06:00, when the first loaves come out.
+  const lClock = document.querySelector('.l-clock'), lPad = n => String(n).padStart(2, '0');
+  document.querySelector('.loader')?.addEventListener('loaderprogress', ({ detail }) => {
+    const m = Math.round(220 + detail * 140); lClock.textContent = `${lPad(Math.floor(m / 60))}:${lPad(m % 60)}`;
+  });
 </script>
 <script src="storymotion.js"></script>
 </body>

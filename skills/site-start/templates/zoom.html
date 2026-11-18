@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Zoom — StoryMotion template</title>
-<script>document.documentElement.classList.add('js')</script>
+<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader:' + location.pathname) && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
 <link rel="stylesheet" href="storymotion.css">
 <style>
   /* Template: ZOOM — scale device. One continuous dive: landscape → building → room → detail.
@@ -58,9 +58,20 @@
   .gauge b { left: 0; right: 0; height: 1px; background: var(--ink); opacity: .8; }
   .gauge b::after { color: var(--ink); }
   .gauge:hover i::after { opacity: 0; }
+
+  /* Loader = zooming out to the whole project: the name starts huge (1 : 1, a detail) and settles into its frame (1 : 5000) */
+  .l-frame { position: relative; width: min(64vmin, 560px); aspect-ratio: 1; display: grid; place-items: center;
+             outline: 1px solid color-mix(in srgb, var(--accent) calc(var(--lp, 0) * 100%), transparent); }
+  .l-name { font: 500 clamp(28px, 5vw, 64px)/1 "Helvetica Neue", Arial, sans-serif; text-transform: uppercase; white-space: nowrap;
+            letter-spacing: calc(.06em + (1 - var(--lp, 0)) * .5em); scale: calc(1 + (1 - var(--lp, 0)) * (1 - var(--lp, 0)) * 7); }
+  .l-scale { position: absolute; bottom: 12vh; font: 500 12px/1 ui-monospace, monospace; letter-spacing: .2em; color: var(--accent); }
 </style>
 </head>
 <body>
+<div class="loader" aria-hidden="true">
+  <div class="l-frame"><div class="l-name" data-name>Casa Lume</div></div>
+  <div class="l-scale">1 : 1</div>
+</div>
 <div class="chapter" aria-live="polite">01 — Studio</div>
 <div class="gauge" aria-hidden="true"><i></i></div>
 
@@ -119,6 +130,12 @@
   // Gauge readout: drawing scale from 1 : 5000 down to 1 : 1, in step with the zoom.
   const rulerThumb = document.querySelector('.gauge i');
   document.querySelector('.scene').addEventListener('progress', ({ detail: { p: detail } }) => rulerThumb.dataset.s = Math.round(Math.pow(5000, 1 - detail)).toLocaleString('en'));
+</script>
+<script>
+  // Loader readout: drawing scale, from the detail (1 : 1) out to the site (1 : 5000).
+  const lScale = document.querySelector('.l-scale');
+  document.querySelector('.loader')?.addEventListener('loaderprogress', ({ detail }) =>
+    lScale.textContent = `1 : ${Math.round(Math.pow(5000, detail)).toLocaleString('en')}`);
 </script>
 <script src="storymotion.js"></script>
 </body>

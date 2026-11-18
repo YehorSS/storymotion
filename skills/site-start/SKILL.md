@@ -1,6 +1,6 @@
 ---
 name: site-start
-description: Use at the start of any new website, landing page, shop, portfolio, product or marketing page, or a full redesign — before writing code. Classifies the kind of site, decides whether it needs a narrative (full, partial or none), always asks the user whether they want a template and offers the fitting ones, then hands off to scroll-narrative and web-motion.
+description: Use at the start of any new website, landing page, shop, portfolio, product or marketing page, or a full redesign — before writing code. Classifies the kind of site, decides whether it needs a narrative (full, partial or none), always asks the user whether they want a template and offers the fitting ones, designs the loading screen from the site name in the same story and style, then hands off to scroll-narrative and web-motion.
 ---
 
 # Site Start
@@ -53,7 +53,27 @@ Example message:
 
 Do not start building until the user picks. If they pick a template, read its section in `CATALOG.md` before editing.
 
-## Step 3. Hand off
+## Step 3. Loading screen from the site name
+
+Every template has a loader. Build it from three things only: **the site name** (the letters are the material),
+**the narrative device**, and **the site's palette and type**. It is the first sentence of the story, not a spinner.
+
+| Device | Loader idea | Readout |
+|--------|-------------|---------|
+| Time axis | night sky turns to dawn, the sun climbs, the name rises | clock (03:40 → 06:00) |
+| Path | a trail draws itself, the name is "written" along with it | km |
+| Zoom | the name starts huge and settles into its frame | scale 1 : 1 → 1 : 5000 |
+| Transformation | the name in the old style is wiped into the new brand | year |
+| Chapters | the outlined name slides in and fills, chapter counter | 01 → 05 |
+| Partial (product) | the product's promise acted on the name (e.g. scattered letters get sorted) | status text |
+| None (shop, docs, app) | name + hairline, ≤ 0.7 s — or no loader at all | — |
+
+Rules: shown once per session; click skips it; at least `data-min` ms (1.2–2 s for full narrative) and ends on real load, 4 s cap,
+6 s CSS failsafe; no loader with reduced motion or without JS; its last frame hands off to the hero (same name, colour, place),
+and the hero's own entrance plays only after it. When you rename the site, rename it in the loader too and re-check the fit
+(long names: smaller size or two lines). Preview it any time with `?loader` in the URL.
+
+## Step 4. Hand off
 
 - Copy the chosen template **plus `storymotion.css` and `storymotion.js`** into the project.
 - Full / partial narrative → `scroll-narrative`: story questions, beat sheet (`beats.md`), pacing. Show the beat sheet before writing content.

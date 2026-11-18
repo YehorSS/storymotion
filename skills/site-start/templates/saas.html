@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SaaS — StoryMotion template</title>
-<script>document.documentElement.classList.add('js')</script>
+<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader:' + location.pathname) && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
 <link rel="stylesheet" href="storymotion.css">
 <style>
   /* Template: SAAS — partial narrative. A clear, scannable product landing; ONE pinned "how it works" scene tells
@@ -76,9 +76,23 @@
   .gauge::before { inset: 0 3px; border-radius: 999px; background: var(--line); }
   .gauge i { left: 1px; right: 1px; height: 48px; border-radius: 999px; top: calc(var(--progress, 0) * (100% - 48px)); }
   .gauge b { display: none; }
+
+  /* Loader = the product's promise: scattered letters of the name get sorted into place, then a green tick */
+  .l-box { display: grid; justify-items: center; gap: 18px; }
+  .l-name { font: 700 clamp(64px, 12vw, 160px)/1 Inter, "Segoe UI", system-ui, sans-serif; letter-spacing: -.04em; }
+  .l-name .w > span { display: inline-block; translate: calc(var(--x, 0px) * (1 - var(--lp, 0))) calc(var(--y, 0px) * (1 - var(--lp, 0))); rotate: calc(var(--r, 0deg) * (1 - var(--lp, 0))); }
+  .l-status { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 14px; }
+  .l-status b { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #c9cde0;
+                background: color-mix(in srgb, #2bd47d calc(clamp(0, (var(--lp, 0) - .8) * 500, 100) * 1%), transparent); }
 </style>
 </head>
 <body>
+<div class="loader" aria-hidden="true">
+  <div class="l-box">
+    <div class="l-name">Tidy</div>
+    <div class="l-status"><b></b><span>Sorting…</span></div>
+  </div>
+</div>
 <div class="gauge" aria-hidden="true"><i></i></div>
 <header><b>Tidy</b><nav><a>Product</a><a>Pricing</a><a>Docs</a></nav><a class="btn ghost" href="#">Sign in</a></header>
 
@@ -142,6 +156,17 @@
       requestAnimationFrame(step);
     });
   }));
+</script>
+<script>
+  // Loader: scatter the letters of the name, then the status turns to "Sorted."
+  document.querySelectorAll('.l-name').forEach(el => el.innerHTML = [...el.textContent.trim()].map(c => `<span class="w"><span>${c}</span></span>`).join(''));
+  document.querySelectorAll('.l-name .w > span').forEach(s => {
+    s.style.setProperty('--x', `${(Math.random() - .5) * 60}vw`);
+    s.style.setProperty('--y', `${(Math.random() - .5) * 50}vh`);
+    s.style.setProperty('--r', `${(Math.random() - .5) * 180}deg`);
+  });
+  const lStatus = document.querySelector('.l-status span');
+  document.querySelector('.loader')?.addEventListener('loaderprogress', ({ detail }) => lStatus.textContent = detail > .85 ? 'Sorted.' : 'Sorting…');
 </script>
 <script src="storymotion.js"></script>
 </body>

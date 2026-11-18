@@ -17,6 +17,43 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const clamp = v => Math.min(1, Math.max(0, v));
 
+  // Loader built from the site name. Shown once per session (the head script marks html .loading / .loader-seen),
+  // never with reduced motion. Sets --lp (0 → 1) on .loader and fires "loaderprogress" (detail = lp) for readouts.
+  // Stays at least data-min ms (default 1600) so the intro can finish, ends on window load (cap 4 s); click skips.
+  const loader = document.querySelector('.loader');
+  for (const el of document.querySelectorAll('.loader [data-name]')) {
+    let i = 0;
+    el.innerHTML = el.textContent.trim().split(/\s+/).map(word =>
+      `<span class="w">${[...word].map(c => `<span style="--i:${i++}">${c}</span>`).join('')}</span>`).join(' ');
+  }
+  if (!loader || reduce.matches || !root.classList.contains('loading')) {
+    root.classList.remove('loading');
+    loader?.remove();
+  } else {
+    const min = +loader.dataset.min || 1600, t0 = performance.now();
+    let finished = false;
+    const setLp = lp => { loader.style.setProperty('--lp', lp.toFixed(4)); loader.dispatchEvent(new CustomEvent('loaderprogress', { detail: lp })); };
+    const frame = t => {
+      if (finished) return;
+      setLp(1 - Math.pow(1 - clamp((t - t0) / min), 3));
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+    const done = () => {
+      if (finished) return;
+      finished = true;
+      setLp(1);
+      try { sessionStorage.setItem('sm-loader:' + location.pathname, '1'); } catch {}
+      loader.classList.add('out');
+      root.classList.remove('loading'); // hero animations start now, as the loader fades
+      setTimeout(() => loader.remove(), 900);
+    };
+    const loaded = new Promise(r => document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true }));
+    Promise.race([Promise.all([loaded, document.fonts?.ready]), new Promise(r => setTimeout(r, 4000))])
+      .then(() => setTimeout(done, Math.max(0, min - (performance.now() - t0))));
+    loader.addEventListener('click', done);
+  }
+
   // Letters wrapped per word, so lines still break between words.
   for (const el of document.querySelectorAll('[data-split]')) {
     el.setAttribute('aria-label', el.textContent);

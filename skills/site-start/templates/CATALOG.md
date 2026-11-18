@@ -4,6 +4,8 @@ Seven templates. Each one is a different **story device** (or none), a different
 
 All of them share `storymotion.css` + `storymotion.js` (reveals, pinned scenes with `--p`, step captions, chapter label, draggable scroll gauge with chapter marks, reduced motion). Each template restyles the scroll gauge to match its story and look, because the scroll is part of the narrative too. Copy the chosen `.html` **and both shared files**.
 
+Every template also has a **loading screen built from the site name** in the same story and style (see each section). Add `?loader` to the URL to see it again; normally it shows once per session.
+
 Preview: serve this folder (`python -m http.server` here) and open `index.html`; the gallery shows every template.
 
 | Template | Narrative | Device | Look | Best for |
@@ -28,6 +30,8 @@ Preview: serve this folder (`python -m http.server` here) and open `index.html`;
 
 **Motion:** letter-split headline; sky = tall gradient slid by `--p`; sun moves on `sin()` arc; captions swap by step; caption colour flips to light when the sky gets dark (`data-dark-after`); count-ups; magnetic CTA.
 
+**Loader:** "Forno" — night sky warms to dawn, the sun climbs out of the horizon, the letters rise like dough; clock 03:40 → 06:00.
+
 **Scroll gauge:** sky-gradient track (dawn → night), the sun is the thumb, a clock readout (03:40 → 22:00) next to it; chapter ticks show names on hover.
 
 **Replace:** brand, the 4 hours and their sentences, stats. Add a real high-res photo per hour if available (as a layer behind the sun).
@@ -45,6 +49,8 @@ Preview: serve this folder (`python -m http.server` here) and open `index.html`;
 **Look:** paper `#f1ebdf` with faint ruled lines, ink-brown text, red-pencil accent `#c2462d`; italic old-style serif, monospace labels. Feels like a travel journal.
 
 **Motion:** SVG `stroke-dashoffset` drawing by `--p`; walker positioned with `getPointAtLength`; stops fill as passed; legs swap per step.
+
+**Loader:** "The Salt Road" — a red-pencil trail draws itself over a dotted route and the name is written along with it; km count up.
 
 **Scroll gauge:** a dotted trail; the walked part fills in red pencil, chapters are stop rings, the thumb is the walker with a "km 188" readout.
 
@@ -64,6 +70,8 @@ Preview: serve this folder (`python -m http.server` here) and open `index.html`;
 
 **Motion:** JS sets `scale = 5^(t − k)` for each frame and fades it once it overfills the screen; captions swap per level; scale label updates.
 
+**Loader:** "Casa Lume" — the name starts at detail scale, huge and widely spaced, and settles into a brass frame; scale 1 : 1 → 1 : 5000.
+
 **Scroll gauge:** a ruler with tick marks and a brass cursor; the readout is the drawing scale, 1 : 5000 → 1 : 1.
 
 **Replace:** each `.frame` background with a real photo or render (align the next level's subject to the centre of the previous one, that is where the zoom lands).
@@ -81,6 +89,8 @@ Preview: serve this folder (`python -m http.server` here) and open `index.html`;
 **Look:** light `#f6f5f2`, white cards, electric-blue accent; tight bold grotesk. Feels trustworthy, modern, clear.
 
 **Motion:** `clip-path: inset()` driven by `--p`; divider follows; step cards swap; count-ups.
+
+**Loader:** "Nuovo" — the name in a dated italic serif is wiped by a divider into the new bold blue logotype; year 1974 → 2026.
 
 **Scroll gauge:** a two-tone slider (new blue above, old tone below) with a round handle and a year pill, 1974 → 2026.
 
@@ -100,6 +110,8 @@ Preview: serve this folder (`python -m http.server` here) and open `index.html`;
 
 **Motion:** track `translate: calc(var(--p) * (100vw − 100%))`; progress bar `scale` by `--p`; counter per step.
 
+**Loader:** "Ferrylink" — a giant outlined name slides in sideways and fills with acid green; chapter counter 01 → 05 with a bar.
+
 **Scroll gauge:** an index of numbered segments (01–05) with an acid fill and block thumb.
 
 **Replace:** card texts; `.visual` blocks with project images (`--img`). Keep 4–6 chapters; more gets tiring sideways.
@@ -118,6 +130,8 @@ Preview: serve this folder (`python -m http.server` here) and open `index.html`;
 
 **Motion:** reveals and hover lifts; in the story scene cards interpolate from `--x0/--y0/--r0` to `--x1/--y1` by `--p`; ticks fill late; price count when toggling; FAQ `+` rotates.
 
+**Loader:** "Tidy" — the letters of the name start scattered and get sorted into place, then the status turns from "Sorting…" to "Sorted." with a green tick.
+
 **Scroll gauge:** a slim rounded rail with a violet pill, like a polished app scrollbar; no chapter marks.
 
 **Replace:** product mock with a real screenshot (2×), feature texts, the story's three steps, plans.
@@ -135,6 +149,8 @@ Preview: serve this folder (`python -m http.server` here) and open `index.html`;
 **Look:** warm off-white, thin lines, terracotta accent; neutral sans. Products are the colour.
 
 **Motion:** filtering uses View Transitions so cards glide to new places; image zoom on hover; quick view pops in; the bag counter bumps on add. All of it under 0.7 s, none of it blocks the user.
+
+**Loader:** "Argilla" — just the name and a hairline filling in under 0.7 s; a shop should not make people wait for a story.
 
 **Scroll gauge:** a hairline with a small dark thumb, out of the way; shopping is the point.
 

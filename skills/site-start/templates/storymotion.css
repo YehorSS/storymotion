@@ -17,6 +17,20 @@ img { display: block; max-width: 100%; }
 .js [data-reveal] { opacity: 0; translate: 0 24px; transition: opacity var(--dur-enter) var(--ease-out), translate var(--dur-enter) var(--ease-out); transition-delay: calc(var(--i, 0) * 70ms); }
 .js [data-reveal].in { opacity: 1; translate: 0 0; }
 
+/* Loader (styled per template from the site name). Visible only with JS, hidden on repeat visits and
+   with reduced motion; the failsafe animation hides it after 6 s even if the script never runs. */
+.loader { display: none; }
+:where(.js) .loader { display: grid; place-items: center; position: fixed; inset: 0; z-index: 100; overflow: clip; cursor: pointer;
+              background: var(--bg); color: var(--ink);
+              transition: opacity 700ms var(--ease-out), visibility 0s 700ms; animation: sm-failsafe 0s 6s forwards; }
+:where(.js) .loader.out { opacity: 0; visibility: hidden; }
+.loader-seen .loader { display: none !important; }
+.loader [data-name] .w { display: inline-block; white-space: nowrap; }
+.loader [data-name] .w > span { display: inline-block; }
+@keyframes sm-failsafe { to { opacity: 0; visibility: hidden; } }
+/* Hero letters wait for the loader, then play (and stay visible if anything fails) */
+.loading [data-split] .w > span { animation-name: none; }
+
 /* Headline split into letters */
 [data-split] .w { display: inline-block; white-space: nowrap; }
 [data-split] .w > span { display: inline-block; animation: sm-letter var(--dur-enter) var(--ease-out) both; animation-delay: calc(var(--i) * 28ms); }
@@ -50,6 +64,7 @@ img { display: block; max-width: 100%; }
 
 @media (prefers-reduced-motion: reduce) {
   [data-split] .w > span { animation: none; }
+  .js .loader { display: none; }
   .js [data-reveal] { opacity: 1; translate: none; transition: none; }
   .js [data-step], .js [data-step].on { translate: none; transition: opacity 1ms; }
 }

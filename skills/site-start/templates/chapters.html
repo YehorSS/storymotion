@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Chapters — StoryMotion template</title>
-<script>document.documentElement.classList.add('js')</script>
+<script>(r => { r.classList.add('js'); try { r.classList.add(sessionStorage.getItem('sm-loader:' + location.pathname) && !/[?&]loader/.test(location.search) ? 'loader-seen' : 'loading'); } catch (e) { r.classList.add('loader-seen'); } })(document.documentElement)</script>
 <link rel="stylesheet" href="storymotion.css">
 <style>
   /* Template: CHAPTERS — horizontal case study. Vertical scroll moves a pinned track sideways, chapter by chapter.
@@ -59,9 +59,22 @@
   .gauge b::before { content: attr(data-n); position: absolute; right: calc(100% + 8px); top: 50%; translate: 0 -50%; font: 500 10px/1 ui-monospace, monospace; color: var(--muted); transition: opacity var(--dur-ui); }
   .gauge b::after { color: var(--ink); }
   .gauge:hover b::before { opacity: 0; }
+
+  /* Loader = the case flicking past chapter by chapter: an outlined name slides in sideways and fills with acid, counter 01 -> 05 */
+  .l-name { font: 800 clamp(64px, 19vw, 320px)/.9 "Helvetica Neue", Arial, sans-serif; letter-spacing: -.06em; white-space: nowrap;
+            color: transparent; -webkit-text-stroke: 2px var(--accent);
+            background: linear-gradient(90deg, var(--accent) calc(var(--lp, 0) * 100%), #0000 0); -webkit-background-clip: text; background-clip: text;
+            translate: calc((1 - var(--lp, 0)) * 24vw) 0; }
+  .l-count { position: absolute; left: 5vw; bottom: 6vh; display: flex; gap: 14px; align-items: center; font: 500 12px/1 ui-monospace, monospace; color: var(--muted); }
+  .l-count i { width: 160px; height: 2px; background: #ffffff26; position: relative; }
+  .l-count i::after { content: ""; position: absolute; inset: 0; background: var(--accent); transform-origin: left; scale: var(--lp, 0) 1; }
 </style>
 </head>
 <body>
+<div class="loader" aria-hidden="true">
+  <div class="l-name">Ferrylink</div>
+  <div class="l-count"><span>01</span><i></i><span>05</span></div>
+</div>
 <div class="chapter" aria-live="polite">Case — Ferrylink</div>
 <div class="gauge" aria-hidden="true"><i></i></div>
 
@@ -104,6 +117,11 @@
 <script>
   const ch = document.querySelector('.chapters'), cur = ch.querySelector('.cur');
   ch.addEventListener('progress', ({ detail: { step } }) => cur.textContent = String(step + 1).padStart(2, '0'));
+</script>
+<script>
+  // Loader readout: chapter counter.
+  const lCur = document.querySelector('.l-count span');
+  document.querySelector('.loader')?.addEventListener('loaderprogress', ({ detail }) => lCur.textContent = String(Math.min(5, Math.floor(detail * 5) + 1)).padStart(2, '0'));
 </script>
 <script src="storymotion.js"></script>
 </body>
